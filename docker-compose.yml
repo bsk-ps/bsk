@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        DEVELOPMENT: "true"
+    ports:
+      - 80:80
+    volumes:
+      # mounts src in the container for hot-reloading
+      - ./src/:/bsk/api/src:ro
+    environment:
+      # when true enables uvicorn hot reloading
+      DEVELOPMENT: "true"
