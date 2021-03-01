@@ -4,7 +4,7 @@ FROM python:3.9.2-slim as deps
 WORKDIR /bsk/api/
 
 ## Pipenv
-COPY docker/pipenv-requirements.txt /bsk/api/
+COPY ./docker/pipenv-requirements.txt /bsk/api/
 RUN pip install --no-cache-dir -r pipenv-requirements.txt
 
 ## Python venv
