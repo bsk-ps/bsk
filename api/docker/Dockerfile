@@ -22,6 +22,8 @@ FROM deps as tests
 
 ARG DEVELOPMENT=false
 
+ENV PYTHONDONTWRITEBYTECODE 1
+
 ## Python dependencies
 RUN pipenv install --deploy --dev
 
@@ -36,10 +38,9 @@ RUN if [ "$DEVELOPMENT" = "false" ]; then \
         flake8 /bsk/api/src/ \
     ; fi
 # Run tests
-# TODO: add tests, not having any results in build failure
-#RUN if [ "$DEVELOPMENT" = "false" ]; then \
-#        pytest /bsk/api/tests/ \
-#    ; fi
+RUN if [ "$DEVELOPMENT" = "false" ]; then \
+        pytest /bsk/api/tests/ \
+    ; fi
 
 
 
