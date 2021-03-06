@@ -10,10 +10,10 @@ export const Home = () => {
                         Adrian Oleszczak &bull; Bartosz Wiszowaty &bull; Szymon Sarosiek
                 </div>
                 </div>
-                <h3>Kryptografia</h3>
-                <div>Zadanie 1 - IMPLEMENTACJA PODSTAWOWYCH MODUŁÓW KRYPTOGRAFICZNYCH (CZ. 1)</div>
-                <div>Zadanie 2 - IMPLEMENTACJA PODSTAWOWYCH MODUŁÓW KRYPTOGRAFICZNYCH (CZ. 2)</div>
-                <div>Zadanie 3</div>
+                <div class="display-1">Kryptografia</div>
+                <div class="display-2">Zadanie 1 - IMPLEMENTACJA PODSTAWOWYCH MODUŁÓW KRYPTOGRAFICZNYCH (CZ. 1)</div>
+                <div class="display-2">Zadanie 2 - IMPLEMENTACJA PODSTAWOWYCH MODUŁÓW KRYPTOGRAFICZNYCH (CZ. 2)</div>
+                <div class="display-2">Zadanie 3</div>
             </div>
         </div>
     );
