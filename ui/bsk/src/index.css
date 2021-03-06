@@ -15,7 +15,15 @@ body {
   font-weight: 300;
   font-size: 20px;
 }
+.display-3{
+  font-weight: 500;
+  font-size: 20px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.row{
+  display: flex;
 }

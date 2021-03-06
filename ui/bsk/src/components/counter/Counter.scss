@@ -1,0 +1,42 @@
+@import "../../global.scss";
+.counter {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 50px;
+    .controll,
+    .count {
+        height: 100%;
+        width: 50px;
+    }
+    .count {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .controll {
+        background-color: transparent;
+        color: $primary;
+        border: none;
+        border-radius: 50%;
+        border: 1px solid #d4d4d4;
+        display: grid;
+
+        span {
+            margin: auto;
+        }
+
+        &:focus {
+            outline: none;
+        }
+        &:hover {
+            background-color: #d4d4d4b2;
+            transition: 0.5s;
+        }
+        &:active{
+            background-color: #d4d4d4da;
+            transition: 0.5s;
+        }
+    }
+}

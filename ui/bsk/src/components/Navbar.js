@@ -1,21 +1,21 @@
-import "./Navbar.css";
+import "./Navbar.scss";
 
 export const Navbar = ({ children }) => {
     return (
         <>
-            <div class="navbar">
-                <div class="navbar-title">BSK</div>
+            <div className="navbar cool-background">
+                <div className="navbar-title">BSK</div>
                 <hr/>
                 <ul>
-                    <li class="navbar-section-header">
+                    <li className="navbar-section-header">
                         Kryptografia
                     </li>
-                    <li class="item">Zadanie 1</li>
-                    <li class="item">Zadanie 2</li>
-                    <li class="item">Zadanie 3</li>
+                    <li className="item">Zadanie 1</li>
+                    <li className="item">Zadanie 2</li>
+                    <li className="item">Zadanie 3</li>
                 </ul>
             </div>
-            <div class="content">
+            <div className="content">
                 {children}
             </div>
         </>
