@@ -33,7 +33,7 @@ async def railfence_cipher(
 
 
 @app.post("bsk-api/railfence/decipher")
-async def columnar_transposition_decipher(
+async def railfence_decipher(
         ciphertext: Optional[str] = Form(None),
         ciphertext_file: Optional[UploadFile] = File(None),
         key: int = Form(...),

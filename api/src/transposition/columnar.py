@@ -14,7 +14,7 @@ def cipher(
         group_separator: str = ''
 ) -> str:
     """
-    Encrypts ciphertext with supplied key using the columnar transposition cipher
+    Encrypts message with supplied key using the columnar transposition cipher
 
     If key is not zero-based (default, controlled by `zero_based` parameter) then
     it has to contain all natural numbers lower than k+1 where k is length of key.
