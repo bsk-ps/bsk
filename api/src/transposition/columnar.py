@@ -29,6 +29,7 @@ def cipher(
     """
     if isinstance(key, str):
         key = word_to_key(key)
+        zero_based = True
 
     validate_key(key, zero_based)
 
@@ -72,6 +73,7 @@ def decipher(
     """
     if isinstance(key, str):
         key = word_to_key(key)
+        zero_based = True
 
     validate_key(key, zero_based)
 
