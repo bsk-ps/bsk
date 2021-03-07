@@ -13,13 +13,13 @@ export const Counter = ({ count, onIncrement, onDecrement }) => {
         <>
             <div className="counter">
                 <button onClick={handleDecrement} className="controll">
-                    <span class="material-icons">
+                    <span className="material-icons">
                         remove
                     </span>
                 </button>
                 <div className="count">{count}</div>
                 <button onClick={handleIncrement} className="controll">
-                    <span class="material-icons">
+                    <span className="material-icons">
                         add
                     </span>
                 </button>

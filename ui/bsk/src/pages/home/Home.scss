@@ -44,12 +44,26 @@
     outline: none;
   }
 }
+.btn-icon {
+  padding: 5px 10px;
+  border: none;
+  background-color: $accent;
+  font-size: 0.6rem;
 
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    transition: 0.7s;
+    background-color: #a76d0d;
+  }
+}
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  hr{
+  hr {
     width: 100%;
     border-color: #ececec5e;
   }

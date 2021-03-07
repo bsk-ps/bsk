@@ -2,28 +2,68 @@ import { ButtonGroup } from "../../components/ButtonGroup";
 import "./Home.scss";
 import { useState } from 'react';
 import { Counter } from "../../components/counter/Counter";
+import { railfenceCipher, railfenceDecipher } from "../../services/ciphers";
 
 
 
 const RailFence = () => {
     const [form, setForm] = useState({
-        rows: 0,
+        key: 1,
         data: null,
-        decode: null,
-    })
+    });
+
+
+    const [output, setOutput] = useState("");
+
+
     const onIncrement = () => {
         setForm({
-            rows: form.rows += 1,
+            key: form.key += 1,
             data: form.data,
-            decode: form.decode,
         })
     }
     const onDecrement = () => {
         setForm({
-            rows: form.rows > 0 ? form.rows -= 1 : 0,
+            key: form.key > 1 ? form.key -= 1 : 1,
             data: form.data,
-            decode: form.decode,
         })
+    }
+
+    const handleDataChanged = (event) => {
+        setForm({
+            key: form.key,
+            data: event.target.value,
+        })
+    }
+
+    const handleEncode = async () => {
+
+        let formdata = new FormData();
+        formdata.append("message", form.data);
+        formdata.append("key", form.key);
+
+        setOutput(
+            await railfenceCipher(formdata)
+        );
+    }
+    const handleDecode = async () => {
+        let formdata = new FormData();
+        formdata.append("ciphertext", form.data);
+        formdata.append("key", form.key);
+
+        setOutput(
+            await railfenceDecipher(formdata)
+        );
+    }
+
+    const handleSwap = async () => {
+        if (output !== "") {
+            setOutput(form.data)
+            setForm({
+                key: form.key,
+                data: output,
+            })  
+        }
     }
 
     return (
@@ -33,24 +73,31 @@ const RailFence = () => {
                 <div className="paper card">
                     <h2 className="display-2">ENTER DATA</h2>
                     <hr />
-                    <textarea placeholder="Enter text" className="text-input"></textarea>
+                    <textarea value={form.data} onChange={handleDataChanged} placeholder="Enter text" className="text-input"></textarea>
                     <hr />
                     <h2 className="display-2">OR</h2>
                     <button className="btn-outline">UPLOAD FILE</button>
                 </div>
                 <div style={{ margin: "0 25px" }} className="paper card">
+
                     <h2 className="display-2">ROWS</h2>
                     <hr />
-                    <Counter count={form.rows} onIncrement={onIncrement} onDecrement={onDecrement} />
+                    <Counter count={form.key} onIncrement={onIncrement} onDecrement={onDecrement} />
                     <hr />
                     <ButtonGroup>
-                        <button className="btn-primary">Encode</button>
-                        <button className="btn-primary">Decode</button>
+                        <button onClick={handleEncode} className="btn-primary">Encode</button>
+                        <button onClick={handleSwap} className="btn-icon">
+                            <span className="material-icons">
+                                swap_horiz
+                            </span>
+                        </button>
+                        <button onClick={handleDecode} className="btn-primary">Decode</button>
                     </ButtonGroup>
                 </div>
                 <div className="paper card">
                     <h2 className="display-2">OUTPUT</h2>
                     <hr />
+                    {output}
                 </div>
             </div>
 
@@ -66,11 +113,10 @@ export const Home = () => {
                     <div className="title big">Bezpieczeństwo Sieci Komputerowych</div>
                     <div className="authors-block">
                         Adrian Oleszczak &bull; Bartosz Wiszowaty &bull; Szymon Sarosiek
-                </div>
+                    </div>
                 </div>
                 <h1 className="display-1">Kryptografia</h1>
                 <RailFence />
-
             </div>
         </div>
     );
