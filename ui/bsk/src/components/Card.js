@@ -50,7 +50,7 @@ const OutputCard = ({ output }) => {
         <div className="paper card" style={{ whiteSpace: "pre-line" }}>
             <h2 className="display-2">OUTPUT</h2>
             <hr />
-            <div id="scrollable" style={{overflow: "auto", width: "100%"}}>
+            <div id="scrollable" style={{overflow: "auto", width: "100%", wordWrap: "break-word"}}>
                 {output}
             </div>
         </div>

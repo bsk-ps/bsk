@@ -2,42 +2,153 @@ import { ButtonGroup } from "../../components/ButtonGroup";
 import "./Home.scss";
 import { useState } from 'react';
 import { Counter } from "../../components/counter/Counter";
-import { railfenceCipher, railfenceDecipher } from "../../services/ciphers";
+import { railfenceCipher, railfenceDecipher, columnarTranspositionCipher, columnarTranspositionDecipher, getValidatedFormData } from "../../services/ciphers";
 import { InputCard, OutputCard } from "../../components/Card";
 
-const ColumnarTransposition = () => {
+const ColumnarTranspositionA = () => {
     const [form, setForm] = useState({
-        key: 1,
+        key: "",
         data: "",
     });
 
+    const [output, setOutput] = useState("");
+
+    const handleKeyChange = (event) => {
+        let input = event.target.value;
+        input = input.replace(/\s/g, '-');
+        setForm({
+            key: input,
+            data: form.data,
+        })
+    }
+    const handleEncode = async () => {
+        let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
+        if (formdata) {
+            setOutput(
+                await columnarTranspositionCipher(formdata)
+            );
+        }
+
+
+    }
+    const handleDecode = async () => {
+        let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
+        if (formdata) {
+            setOutput(
+                await columnarTranspositionDecipher(formdata)
+            );
+        }
+    }
+    const handleSwap = async () => {
+        if (output !== "" && !(form.data instanceof File)) {
+            setOutput(form.data)
+            setForm({
+                key: form.key,
+                data: output,
+            })
+        }
+    }
+
     return (
         <>
-            <h2 className="display-3">COLUMNAR TRANSPOSITION A</h2>
+            <h2 className="display-3">COLUMNAR TRANSPOSITION B</h2>
             <div className="container">
                 <InputCard form={form} setForm={setForm} />
                 <div style={{ margin: "0 25px" }} className="paper card">
-
-                    <h2 className="display-2">KEYS</h2>
+                    <h2 className="display-2">KEY</h2>
                     <hr />
-
+                    {form.key.length > 0 ?
+                        <div className="preview code">
+                            {form.key}
+                        </div>
+                        : <></>
+                    }
+                    <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
                     <hr />
                     <ButtonGroup>
-                        <button className="btn-primary">Encode</button>
-                        <button className="btn-icon">
+                        <button onClick={handleEncode} className="btn-primary">Encode</button>
+                        <button onClick={handleSwap} className="btn-icon">
                             <span className="material-icons">
                                 swap_horiz
                             </span>
                         </button>
-                        <button className="btn-primary">Decode</button>
+                        <button onClick={handleDecode} className="btn-primary">Decode</button>
                     </ButtonGroup>
                 </div>
-                <OutputCard/>
+                <OutputCard output={output} />
             </div>
         </>
     );
 }
 
+const ColumnarTranspositionB = () => {
+    const [form, setForm] = useState({
+        key: "",
+        data: "",
+    });
+
+    const [output, setOutput] = useState("");
+
+    const handleKeyChange = (event) => {
+        setForm({
+            key: event.target.value,
+            data: form.data,
+        })
+    }
+    const handleEncode = async () => {
+        let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
+        if (formdata) {
+            setOutput(
+                await columnarTranspositionCipher(formdata)
+            );
+        }
+    }
+
+    const handleDecode = async () => {
+        let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
+        if (formdata) {
+            setOutput(
+                await columnarTranspositionDecipher(formdata)
+            );
+        }
+
+    }
+
+    const handleSwap = async () => {
+        if (output !== "" && !(form.data instanceof File)) {
+            setOutput(form.data)
+            setForm({
+                key: form.key,
+                data: output,
+            })
+        }
+    }
+
+    return (
+        <>
+            <h2 className="display-3">COLUMNAR TRANSPOSITION B</h2>
+            <div className="container" style={{ maxHeight: "550px", }}>
+                <InputCard form={form} setForm={setForm} />
+                <div style={{ margin: "0 25px" }} className="paper card">
+                    <h2 className="display-2">TEXT KEY</h2>
+                    <hr />
+                    <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+                    <hr />
+                    <ButtonGroup>
+                        <button onClick={handleEncode} className="btn-primary">Encode</button>
+                        <button onClick={handleSwap} className="btn-icon">
+                            <span className="material-icons">
+                                swap_horiz
+                            </span>
+                        </button>
+                        <button onClick={handleDecode} className="btn-primary">Decode</button>
+                    </ButtonGroup>
+                </div>
+                <OutputCard output={output} />
+            </div>
+        </>
+    );
+}
 
 const RailFence = () => {
     const [form, setForm] = useState({
@@ -60,30 +171,34 @@ const RailFence = () => {
         })
     }
     const handleEncode = async () => {
-        let formdata = new FormData();
-        if (form.data instanceof File) {
-            formdata.append("message_file", form.data);
-        } else {
-            formdata.append("message", form.data);
+        let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
+        
+        if (formdata) {
+            setOutput(
+                await railfenceCipher(formdata)
+            );
         }
-        formdata.append("key", form.key);
-
-        setOutput(
-            await railfenceCipher(formdata)
-        );
     }
+
     const handleDecode = async () => {
+        let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
+        if (formdata) {
+            setOutput(
+                await railfenceDecipher(formdata)
+            );
+        }
+    }
+
+
+    const getValidatedFormData = (fileKey, textKey, key) => {
         let formdata = new FormData();
         if (form.data instanceof File) {
-            formdata.append("ciphertext_file", form.data);
+            formdata.append(fileKey, form.data);
         } else {
-            formdata.append("ciphertext", form.data);
+            formdata.append(textKey, form.data);
         }
-        formdata.append("key", form.key);
-
-        setOutput(
-            await railfenceDecipher(formdata)
-        );
+        formdata.append(key, form.key);
+        return formdata;
     }
 
     const handleSwap = async () => {
@@ -95,11 +210,10 @@ const RailFence = () => {
             })
         }
     }
-
     return (
         <>
             <h2 className="display-3">RAIL FENCE</h2>
-            <div className="container" style={{maxHeight: "440px"}}>
+            <div className="container" style={{ maxHeight: "550px", maxWidth: "860px" }}>
                 <InputCard form={form} setForm={setForm} />
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">ROWS</h2>
@@ -136,7 +250,7 @@ export const Home = () => {
                 <div style={{ height: "25px" }}></div>
                 <RailFence />
                 <div style={{ height: "45px" }}></div>
-                <ColumnarTransposition />
+                <ColumnarTranspositionB />
             </div>
         </div>
     );
