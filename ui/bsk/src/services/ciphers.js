@@ -1,4 +1,4 @@
-const apiURL = "http://80.209.239.154/bsk-api/";
+const apiURL = "https://osego.me/bsk-api/";
 
 const railfenceCipher = async (formdata) => {
     
@@ -11,6 +11,7 @@ const railfenceCipher = async (formdata) => {
     const response = await fetch(`${apiURL}railfence/cipher`, requestOptions);
     return await response.json();
 }
+
 const railfenceDecipher = async (formdata) => {
     
     var requestOptions = {

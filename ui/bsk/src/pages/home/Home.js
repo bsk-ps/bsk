@@ -3,7 +3,40 @@ import "./Home.scss";
 import { useState } from 'react';
 import { Counter } from "../../components/counter/Counter";
 import { railfenceCipher, railfenceDecipher } from "../../services/ciphers";
+import { InputCard, OutputCard } from "../../components/Card";
 
+const ColumnarTransposition = () => {
+    const [form, setForm] = useState({
+        key: 1,
+        data: "",
+    });
+
+    return (
+        <>
+            <h2 className="display-3">COLUMNAR TRANSPOSITION A</h2>
+            <div className="container">
+                <InputCard form={form} setForm={setForm} />
+                <div style={{ margin: "0 25px" }} className="paper card">
+
+                    <h2 className="display-2">KEYS</h2>
+                    <hr />
+
+                    <hr />
+                    <ButtonGroup>
+                        <button className="btn-primary">Encode</button>
+                        <button className="btn-icon">
+                            <span className="material-icons">
+                                swap_horiz
+                            </span>
+                        </button>
+                        <button className="btn-primary">Decode</button>
+                    </ButtonGroup>
+                </div>
+                <OutputCard/>
+            </div>
+        </>
+    );
+}
 
 
 const RailFence = () => {
@@ -14,16 +47,6 @@ const RailFence = () => {
 
     const [output, setOutput] = useState("");
 
-    const [isFilePicked, setIsFilePicked] = useState(false);
-
-    const changeHandler = (event) => {
-        setForm({
-            key: form.key,
-            data: event.target.files[0],
-        });
-        event.target.value = null;
-        setIsFilePicked(true);
-    };
     const onIncrement = () => {
         setForm({
             key: form.key += 1,
@@ -36,15 +59,6 @@ const RailFence = () => {
             data: form.data,
         })
     }
-
-    const handleDataChanged = (event) => {
-        setIsFilePicked(false);
-        setForm({
-            key: form.key,
-            data: event.target.value,
-        })
-    }
-
     const handleEncode = async () => {
         let formdata = new FormData();
         if (form.data instanceof File) {
@@ -85,30 +99,9 @@ const RailFence = () => {
     return (
         <>
             <h2 className="display-3">RAIL FENCE</h2>
-            <div className="container">
-                <div className="paper card">
-                    <h2 className="display-2">ENTER DATA</h2>
-                    <hr />
-                    <textarea value={form.data instanceof File ? "" : form.data} onChange={handleDataChanged} placeholder="Enter text" className="text-input"></textarea>
-                    <hr />
-                    <h2 className="display-2">OR</h2>
-                    <input onChange={changeHandler} type="file" name="file" className="btn-file" />
-                    {isFilePicked ? (
-                        <div>
-                            <p>Filename: {form.data.name}</p>
-                            <p>Filetype: {form.data.type}</p>
-                            <p>Size in bytes: {form.data.size}</p>
-                            <p>
-                                lastModifiedDate:{' '}
-                                {form.data.lastModifiedDate.toLocaleDateString()}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>Select a file to show details</p>
-                    )}
-                </div>
+            <div className="container" style={{maxHeight: "440px"}}>
+                <InputCard form={form} setForm={setForm} />
                 <div style={{ margin: "0 25px" }} className="paper card">
-
                     <h2 className="display-2">ROWS</h2>
                     <hr />
                     <Counter count={form.key} onIncrement={onIncrement} onDecrement={onDecrement} />
@@ -123,13 +116,8 @@ const RailFence = () => {
                         <button onClick={handleDecode} className="btn-primary">Decode</button>
                     </ButtonGroup>
                 </div>
-                <div className="paper card">
-                    <h2 className="display-2">OUTPUT</h2>
-                    <hr />
-                    {output}
-                </div>
+                <OutputCard output={output} />
             </div>
-
         </>
     );
 }
@@ -145,7 +133,10 @@ export const Home = () => {
                     </div>
                 </div>
                 <h1 className="display-1">Kryptografia</h1>
+                <div style={{ height: "25px" }}></div>
                 <RailFence />
+                <div style={{ height: "45px" }}></div>
+                <ColumnarTransposition />
             </div>
         </div>
     );

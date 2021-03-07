@@ -4,7 +4,7 @@ import { Home } from "./pages/home/Home";
 
 function App() {
   return (
-    <div className="back">
+    <div>
       <Navbar>
         <div style={{padding: '10px'}}>
           <Home />

@@ -39,6 +39,7 @@
   border: none;
   overflow: hidden;
   resize: none;
+  font-size: 17px;
   &:focus {
     border: none;
     outline: none;
@@ -48,7 +49,7 @@
   padding: 5px 10px;
   border: none;
   background-color: $accent;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
 
   &:focus {
     outline: none;
