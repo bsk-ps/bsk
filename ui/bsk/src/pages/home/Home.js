@@ -9,13 +9,21 @@ import { railfenceCipher, railfenceDecipher } from "../../services/ciphers";
 const RailFence = () => {
     const [form, setForm] = useState({
         key: 1,
-        data: null,
+        data: "",
     });
-
 
     const [output, setOutput] = useState("");
 
+    const [isFilePicked, setIsFilePicked] = useState(false);
 
+    const changeHandler = (event) => {
+        setForm({
+            key: form.key,
+            data: event.target.files[0],
+        });
+        event.target.value = null;
+        setIsFilePicked(true);
+    };
     const onIncrement = () => {
         setForm({
             key: form.key += 1,
@@ -30,6 +38,7 @@ const RailFence = () => {
     }
 
     const handleDataChanged = (event) => {
+        setIsFilePicked(false);
         setForm({
             key: form.key,
             data: event.target.value,
@@ -37,9 +46,12 @@ const RailFence = () => {
     }
 
     const handleEncode = async () => {
-
         let formdata = new FormData();
-        formdata.append("message", form.data);
+        if (form.data instanceof File) {
+            formdata.append("message_file", form.data);
+        } else {
+            formdata.append("message", form.data);
+        }
         formdata.append("key", form.key);
 
         setOutput(
@@ -48,7 +60,11 @@ const RailFence = () => {
     }
     const handleDecode = async () => {
         let formdata = new FormData();
-        formdata.append("ciphertext", form.data);
+        if (form.data instanceof File) {
+            formdata.append("ciphertext_file", form.data);
+        } else {
+            formdata.append("ciphertext", form.data);
+        }
         formdata.append("key", form.key);
 
         setOutput(
@@ -57,12 +73,12 @@ const RailFence = () => {
     }
 
     const handleSwap = async () => {
-        if (output !== "") {
+        if (output !== "" && !(form.data instanceof File)) {
             setOutput(form.data)
             setForm({
                 key: form.key,
                 data: output,
-            })  
+            })
         }
     }
 
@@ -73,10 +89,23 @@ const RailFence = () => {
                 <div className="paper card">
                     <h2 className="display-2">ENTER DATA</h2>
                     <hr />
-                    <textarea value={form.data} onChange={handleDataChanged} placeholder="Enter text" className="text-input"></textarea>
+                    <textarea value={form.data instanceof File ? "" : form.data} onChange={handleDataChanged} placeholder="Enter text" className="text-input"></textarea>
                     <hr />
                     <h2 className="display-2">OR</h2>
-                    <button className="btn-outline">UPLOAD FILE</button>
+                    <input onChange={changeHandler} type="file" name="file" className="btn-file" />
+                    {isFilePicked ? (
+                        <div>
+                            <p>Filename: {form.data.name}</p>
+                            <p>Filetype: {form.data.type}</p>
+                            <p>Size in bytes: {form.data.size}</p>
+                            <p>
+                                lastModifiedDate:{' '}
+                                {form.data.lastModifiedDate.toLocaleDateString()}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>Select a file to show details</p>
+                    )}
                 </div>
                 <div style={{ margin: "0 25px" }} className="paper card">
 
