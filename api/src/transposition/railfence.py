@@ -4,7 +4,7 @@ def cipher(
         /,
 ):
     """
-    Encrypts message using railfence cipher using supplied key.
+    Encrypts message with railfence cipher using supplied key.
     """
     if key == 1:
         return message
@@ -25,12 +25,16 @@ def decipher(
     """
     if key == 1:
         return ciphertext
-    cycle = key * 2 - 2
-    output = list(' '*len(ciphertext))
+    cycle_length = cycle = key * 2 - 2
+    output = ['']*len(ciphertext)
     position = 0
-    for y in range(key):
-        for x in range(len(ciphertext)):
-            if (y + x) % cycle == 0 or (y - x) % cycle == 0:
-                output[x] = ciphertext[position]
-                position += 1
+    for row in range(key):
+        cursor = row
+        while cursor < len(ciphertext):
+            output[cursor] = ciphertext[position]
+            position += 1
+            cursor += cycle
+            if not cycle_length == cycle:
+                cycle = cycle_length - cycle
+        cycle = cycle_length if cycle_length == (row+1) * 2 else (cycle_length - (row+1)*2)
     return ''.join(output)
