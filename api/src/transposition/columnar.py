@@ -3,6 +3,8 @@ from typing import Optional, Union
 from random import choice
 from string import ascii_letters, ascii_lowercase, ascii_uppercase
 
+from src.utils import zero_base_key
+
 
 def cipher(
         message: str,
@@ -95,10 +97,6 @@ def decipher(
 
 def validate_key(key: list[int], zero_based: bool = False) -> None:
     assert all([index + (0 if zero_based else 1) in key for index in range(len(key))]), "Key is invalid"
-
-
-def zero_base_key(key: list[int]) -> list[int]:
-    return [word-1 for word in key]
 
 
 def word_to_key(word: str) -> list[int]:
