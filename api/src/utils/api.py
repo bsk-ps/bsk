@@ -17,11 +17,14 @@ def validate_message_and_file(message: str, message_file: File):
         )
 
 
-async def get_content(content: str, content_file: File, remove_whitespace: bool):
+async def get_content(content: str, content_file: File, remove_whitespace: bool) -> list[str]:
     content = (await content_file.read()).decode() if content_file else content
+    content.replace('\r\n', '\n')
+    content.replace('\r', '\n')
+    content = [line.strip() for line in content.split('\n')]
 
     if remove_whitespace:
-        content = strip_whitespace(content)
+        content = [strip_whitespace(line) for line in content]
 
     return content
 
