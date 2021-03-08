@@ -30,3 +30,15 @@ class TranspositionKey(list[int]):
         if not all(value in key for value in range(len(key))):
             raise ValueError("Key is malformed")
         return key
+
+
+def word_to_key(word: str) -> TranspositionKey:
+    word = word.lower()
+    ordered_letters = sorted(list(word))
+    counter = dict(zip(list(word), [0 for _ in range(len(word))]))
+    output = [0 for _ in range(len(word))]
+    for i in range(len(word)):
+        output[i] = ordered_letters.index(word[i]) + counter[word[i]]
+        counter[word[i]] += 1
+
+    return TranspositionKey(output)

@@ -19,6 +19,7 @@ from .utils.api import (
     get_content,
     get_transposition_key,
 )
+from .utils import word_to_key
 
 app = FastAPI(
     title="BSK Cryptography API",
@@ -57,7 +58,7 @@ async def railfence_cipher(
     validate_message_and_file(message, message_file)
     content = await get_content(message, message_file, False)
 
-    return railfence.cipher(content, key)
+    return '\n'.join(railfence.cipher(line, key) for line in content)
 
 
 @router.post("/railfence/decipher")
@@ -69,7 +70,7 @@ async def railfence_decipher(
     validate_message_and_file(ciphertext, ciphertext_file)
     content = await get_content(ciphertext, ciphertext_file, False)
 
-    return railfence.decipher(content, key)
+    return '\n'.join(railfence.decipher(line, key) for line in content)
 
 
 @router.post("/row_order/cipher")
@@ -83,7 +84,7 @@ async def row_order_cipher(
     content = await get_content(message, message_file, remove_whitespace)
     key = get_transposition_key(key)
 
-    return row_order.cipher(content, key)
+    return '\n'.join(row_order.cipher(line, key) for line in content)
 
 
 @router.post("/row_order/decipher")
@@ -98,7 +99,7 @@ async def row_order_decipher(
     key = get_transposition_key(key)
 
     try:
-        return row_order.decipher(content, key)
+        return '\n'.join(row_order.decipher(line, key) for line in content)
     except ValueError as e:
         raise HTTPException(400, detail=str(e))
 
@@ -112,9 +113,10 @@ async def columnar_transposition_cipher(
 ):
     validate_message_and_file(message, message_file)
     content = await get_content(message, message_file, remove_whitespace)
+    key = word_to_key(key)
 
     try:
-        return columnar.cipher(content, key)
+        return '\n'.join(columnar.cipher(line, key) for line in content)
     except AssertionError as e:
         raise HTTPException(400, detail=str(e))
 
@@ -128,10 +130,11 @@ async def columnar_transposition_decipher(
 ):
     validate_message_and_file(ciphertext, ciphertext_file)
     content = await get_content(ciphertext, ciphertext_file, remove_whitespace)
+    key = word_to_key(key)
 
     try:
-        return columnar.decipher(content, key)
-    except (AssertionError, ValueError) as e:
+        return '\n'.join(columnar.decipher(line, key) for line in content)
+    except ValueError as e:
         raise HTTPException(400, detail=str(e))
 
 
