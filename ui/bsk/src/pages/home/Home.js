@@ -28,8 +28,6 @@ const ColumnarTranspositionA = () => {
                 await columnarTranspositionCipher(formdata)
             );
         }
-
-
     }
     const handleDecode = async () => {
         let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
@@ -57,14 +55,14 @@ const ColumnarTranspositionA = () => {
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">KEY</h2>
                     <hr />
-                    {form.key.length > 0 ?
+                    <div style={{ height: "200px" }}>
+                        <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
                         <div className="preview code">
                             {form.key}
                         </div>
-                        : <></>
-                    }
-                    <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+                    </div>
                     <hr />
+                    <h2 className="display-2">RUN</h2>
                     <ButtonGroup>
                         <button onClick={handleEncode} className="btn-primary">Encode</button>
                         <button onClick={handleSwap} className="btn-icon">
@@ -97,13 +95,13 @@ const ColumnarTranspositionB = () => {
     }
     const handleEncode = async () => {
         let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
+        formdata.append("remove_whitespace", true);
         if (formdata) {
             setOutput(
                 await columnarTranspositionCipher(formdata)
             );
         }
     }
-
     const handleDecode = async () => {
         let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
         if (formdata) {
@@ -111,7 +109,6 @@ const ColumnarTranspositionB = () => {
                 await columnarTranspositionDecipher(formdata)
             );
         }
-
     }
 
     const handleSwap = async () => {
@@ -123,7 +120,6 @@ const ColumnarTranspositionB = () => {
             })
         }
     }
-
     return (
         <>
             <h2 className="display-3">COLUMNAR TRANSPOSITION B</h2>
@@ -132,8 +128,11 @@ const ColumnarTranspositionB = () => {
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">TEXT KEY</h2>
                     <hr />
-                    <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+                    <div style={{ height: "200px" }}>
+                        <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+                    </div>
                     <hr />
+                    <h2 className="display-2">RUN</h2>
                     <ButtonGroup>
                         <button onClick={handleEncode} className="btn-primary">Encode</button>
                         <button onClick={handleSwap} className="btn-icon">
@@ -155,7 +154,6 @@ const RailFence = () => {
         key: 1,
         data: "",
     });
-
     const [output, setOutput] = useState("");
 
     const onIncrement = () => {
@@ -172,14 +170,13 @@ const RailFence = () => {
     }
     const handleEncode = async () => {
         let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
-        
+
         if (formdata) {
             setOutput(
                 await railfenceCipher(formdata)
             );
         }
     }
-
     const handleDecode = async () => {
         let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
         if (formdata) {
@@ -188,8 +185,6 @@ const RailFence = () => {
             );
         }
     }
-
-
     const getValidatedFormData = (fileKey, textKey, key) => {
         let formdata = new FormData();
         if (form.data instanceof File) {
@@ -200,7 +195,6 @@ const RailFence = () => {
         formdata.append(key, form.key);
         return formdata;
     }
-
     const handleSwap = async () => {
         if (output !== "" && !(form.data instanceof File)) {
             setOutput(form.data)
@@ -220,6 +214,7 @@ const RailFence = () => {
                     <hr />
                     <Counter count={form.key} onIncrement={onIncrement} onDecrement={onDecrement} />
                     <hr />
+                    <h2 className="display-2">RUN</h2>
                     <ButtonGroup>
                         <button onClick={handleEncode} className="btn-primary">Encode</button>
                         <button onClick={handleSwap} className="btn-icon">
@@ -249,6 +244,8 @@ export const Home = () => {
                 <h1 className="display-1">Kryptografia</h1>
                 <div style={{ height: "25px" }}></div>
                 <RailFence />
+                <div style={{ height: "45px" }}></div>
+                <ColumnarTranspositionA />
                 <div style={{ height: "45px" }}></div>
                 <ColumnarTranspositionB />
             </div>

@@ -10,7 +10,7 @@ export const Counter = ({ count, onIncrement, onDecrement }) => {
     }
 
     return (
-        <>
+        <div style={{height: "200px"}}>
             <div className="counter">
                 <button onClick={handleDecrement} className="controll">
                     <span className="material-icons">
@@ -24,6 +24,6 @@ export const Counter = ({ count, onIncrement, onDecrement }) => {
                     </span>
                 </button>
             </div>
-        </>
+        </div>
     );
 }

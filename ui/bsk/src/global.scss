@@ -36,6 +36,9 @@ $big: 1200px;
     }
 }
 .btn-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &:hover {
         transition: 0.7s;
         background-color: #a76d0d;
