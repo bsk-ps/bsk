@@ -1,19 +1,28 @@
 from src.transposition import railfence
-from src.utils import remove_whitespace
+from src.utils import remove_whitespace as rw
 
 
 examples = [
     (
-        remove_whitespace("WE ARE DISCOVERED FLEE AT ONCE"),
+        rw("WE ARE DISCOVERED FLEE AT ONCE"),
         3,
-        remove_whitespace("WECRL TEERD SOEEF EAOCA IVDEN"),  # noqa: typos
+        rw("WECRL TEERD SOEEF EAOCA IVDEN"),  # noqa: typos
      ),
     (
-        remove_whitespace("CRYPTOGRAPHY"),
+        rw("CRYPTOGRAPHY"),
         3,
-        remove_whitespace("CTARPORPYYGH"),  # noqa: typos
+        rw("CTARPORPYYGH"),  # noqa: typos
      ),
-
+    (
+        rw("A SLIGHTLY LONGER MESSAGE IS HIDDEN"),
+        5,
+        "AYEHSLLMSSILTORSIDIHNEAEDNGGGE",  # noqa: typos
+    ),
+    (
+        rw("USING SUPPLIED KEY"),
+        4,
+        "UUDSSPEKIGPIENLY",  # noqa: typos
+    ),
 ]
 
 
@@ -25,10 +34,17 @@ def test_cipher():
 
 
 def test_cipher_k1():
-    message = result = remove_whitespace("ANY MESSAGE AT ALL")
+    message = result = rw("ANY MESSAGE AT ALL")
     key = 1
     output = railfence.cipher(message, key)
     assert output == result
+
+
+def test_decipher():
+    for example in examples:
+        message, key, result = example
+        output = railfence.decipher(result, key)
+        assert output == message
 
 
 def test_composition():
