@@ -17,5 +17,5 @@ def test_cipher():
 def test_decipher():
     for example in examples:
         ciphertext, key, result = example
-        output = caesar.caesar(result, key, True)
+        output = caesar.caesar(result, key, False)
         assert output == ciphertext
