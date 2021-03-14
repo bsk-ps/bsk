@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { getValidatedFormData } from '../services/services';
 import { ButtonGroup } from "./buttonGroup/ButtonGroup";
+import { Counter } from './counter/Counter';
 
 const InputCard = ({ form, setForm }) => {
 
@@ -47,28 +49,101 @@ const InputCard = ({ form, setForm }) => {
     );
 }
 
-const RunCardWithNumericKey = ({form, onKeyChange, onEncode, onSwap, onDecode}) => {
+const RunCardWithNumericKey = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
+
+    const handleKeyChange = (event) => {
+        let input = event.target.value;
+        input = input.replace(/\s/g, '-');
+        setForm({
+            key: input,
+            data: form.data,
+        })
+    }
+
     return (
         <div style={{ margin: "0 25px" }} className="paper card">
             <h2 className="display-2">KEY</h2>
             <hr />
             <div style={{ height: "200px" }}>
-                <input placeholder="Enter key" onChange={onKeyChange} className="key-input" />
+                <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
                 <div className="preview code">
                     {form.key}
                 </div>
             </div>
             <hr />
-            <h2 className="display-2">RUN</h2>
-            <ButtonGroup>
-                <button onClick={onEncode} className="btn-primary">Encode</button>
-                <button onClick={onSwap} className="btn-icon">
-                    <span className="material-icons">
-                        swap_horiz
-            </span>
-                </button>
-                <button onClick={onDecode} className="btn-primary">Decode</button>
-            </ButtonGroup>
+            <RunBlock 
+                form={form}
+                setForm={setForm}
+                output={output}
+                setOutput={setOutput}
+                cipherCall={cipherCall}
+                decipherCall={decipherCall}
+            />
+        </div>
+    );
+}
+
+const RunCardWithTextKey = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
+
+    const handleKeyChange = (event) => {
+        let input = event.target.value;
+        input = input.replace(/\s/g, '-');
+        setForm({
+            key: input,
+            data: form.data,
+        })
+    }
+
+
+    return (
+        <div style={{ margin: "0 25px" }} className="paper card">
+            <h2 className="display-2">TEXT KEY</h2>
+            <hr />
+            <div style={{ height: "200px" }}>
+                <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+            </div>
+            <hr />
+            <RunBlock 
+                form={form}
+                setForm={setForm}
+                output={output}
+                setOutput={setOutput}
+                cipherCall={cipherCall}
+                decipherCall={decipherCall}
+            />
+        </div>
+    );
+}
+
+const RunCardWithCounter = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
+
+    const onIncrement = () => {
+        setForm({
+            key: form.key += 1,
+            data: form.data,
+        })
+    }
+    const onDecrement = () => {
+        setForm({
+            key: form.key > 1 ? form.key -= 1 : 1,
+            data: form.data,
+        })
+    }
+
+    return (
+        <div style={{ margin: "0 25px" }} className="paper card">
+            <h2 className="display-2">ROWS</h2>
+            <hr />
+            <Counter count={form.key} onIncrement={onIncrement} onDecrement={onDecrement} />
+            <hr />
+            <RunBlock 
+                form={form}
+                setForm={setForm}
+                output={output}
+                setOutput={setOutput}
+                cipherCall={cipherCall}
+                decipherCall={decipherCall}
+            />
         </div>
     );
 }
@@ -102,4 +177,47 @@ const OutputCard = ({ output }) => {
         </div>
     );
 }
-export { InputCard, OutputCard, RunCardWithNumericKey }
+
+const RunBlock = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
+
+    const handleEncode = async () => {
+        let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
+        formdata.append("remove_whitespace", true);
+        if (formdata) {
+            const response = await cipherCall(formdata)
+            setOutput(response);
+        }
+    }
+    const handleDecode = async () => {
+        let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
+        if (formdata) {
+            const response = await decipherCall(formdata);
+            setOutput(response);
+        }
+    }
+    const handleSwap = async () => {
+        if (output !== "" && !(form.data instanceof File)) {
+            setOutput(form.data)
+            setForm({
+                key: form.key,
+                data: output,
+            })
+        }
+    }
+
+    return (
+        <>
+            <h2 className="display-2">RUN</h2>
+            <ButtonGroup>
+                <button onClick={handleEncode} className="btn-primary">Encode</button>
+                <button onClick={handleSwap} className="btn-icon">
+                    <span className="material-icons">
+                        swap_horiz
+                </span>
+                </button>
+                <button onClick={handleDecode} className="btn-primary">Decode</button>
+            </ButtonGroup>
+        </>
+    );
+}
+export { InputCard, OutputCard, RunCardWithNumericKey, RunCardWithTextKey, RunCardWithCounter }

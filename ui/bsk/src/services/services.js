@@ -12,6 +12,10 @@ const rowOrderCipher = async (formdata) => await postRequest(formdata, 'row_orde
 
 const rowOrderDecipher = async (formdata) => await postRequest(formdata, 'row_order/decipher');
 
+const caesarCipher = async (formdata) => await postRequest(formdata, 'caesar/cipher');
+
+const caesarDecipher = async (formdata) => await postRequest(formdata, 'caesar/decipher');
+
 const postRequest = async (formdata, endpoint) => {
     var requestOptions = {
         method: 'POST',
@@ -29,7 +33,7 @@ const postRequest = async (formdata, endpoint) => {
 }
 
 function getValidatedFormData(fileKey, textKey, key, formMessage, formKey) {
-    if ((formMessage.length > 0 || formMessage instanceof File) && formKey.length > 0) {
+    if ((formMessage.length > 0 || formMessage instanceof File) && (formKey.length > 0 || formKey > 0)) {
         let formdata = new FormData();
         if (formMessage instanceof File) {
             formdata.append(fileKey, formMessage);
@@ -50,6 +54,8 @@ export {
     getValidatedFormData,
     rowOrderCipher,
     rowOrderDecipher,
+    caesarCipher,
+    caesarDecipher,
 };
 
 
