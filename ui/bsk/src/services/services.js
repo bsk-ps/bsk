@@ -8,6 +8,10 @@ const columnarTranspositionCipher = async (formdata) => await postRequest(formda
 
 const columnarTranspositionDecipher = async (formdata) => await postRequest(formdata, 'columnar_transposition/decipher');
 
+const rowOrderCipher = async (formdata) => await postRequest(formdata, 'row_order/cipher');
+
+const rowOrderDecipher = async (formdata) => await postRequest(formdata, 'row_order/decipher');
+
 const postRequest = async (formdata, endpoint) => {
     var requestOptions = {
         method: 'POST',
@@ -16,11 +20,16 @@ const postRequest = async (formdata, endpoint) => {
     };
 
     const response = await fetch(`${apiURL}/${endpoint}`, requestOptions);
-    return await response.json();
+
+    const body = await response.json();
+    if (response.status === 400) {
+        return await body["detail"]
+    }
+    return await body;
 }
 
-function getValidatedFormData(fileKey, textKey, key, formMessage, formKey){
-    if ((formMessage.length >0 || formMessage instanceof File) && formKey.length > 0) {
+function getValidatedFormData(fileKey, textKey, key, formMessage, formKey) {
+    if ((formMessage.length > 0 || formMessage instanceof File) && formKey.length > 0) {
         let formdata = new FormData();
         if (formMessage instanceof File) {
             formdata.append(fileKey, formMessage);
@@ -33,6 +42,14 @@ function getValidatedFormData(fileKey, textKey, key, formMessage, formKey){
     return null;
 }
 
-export { railfenceCipher, railfenceDecipher, columnarTranspositionCipher, columnarTranspositionDecipher, getValidatedFormData };
+export {
+    railfenceCipher,
+    railfenceDecipher,
+    columnarTranspositionCipher,
+    columnarTranspositionDecipher,
+    getValidatedFormData,
+    rowOrderCipher,
+    rowOrderDecipher,
+};
 
 
