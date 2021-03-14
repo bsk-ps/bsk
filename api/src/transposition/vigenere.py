@@ -38,8 +38,3 @@ def decode(message: str, key: str) -> str:
             x = ord('a') + (ord(message[i]) + ord('a') - offset) % 26
         decipher.append(chr(x))
     return ("".join(decipher))
-
-
-if __name__ == "__main__":
-    print(encode("szymon", "fsda"))
-    print(decode("xrbmtf", "fsda"))
