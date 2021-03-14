@@ -49,7 +49,7 @@ const ColumnarTranspositionA = () => {
 
     return (
         <>
-            <h2 className="display-3">COLUMNAR TRANSPOSITION B</h2>
+            <h2 className="display-3">COLUMNAR TRANSPOSITION A</h2>
             <div className="container">
                 <InputCard form={form} setForm={setForm} />
                 <div style={{ margin: "0 25px" }} className="paper card">
@@ -207,7 +207,7 @@ const RailFence = () => {
     return (
         <>
             <h2 className="display-3">RAIL FENCE</h2>
-            <div className="container" style={{ maxHeight: "550px", maxWidth: "860px" }}>
+            <div className="container" style={{ maxHeight: "550px"}}>
                 <InputCard form={form} setForm={setForm} />
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">ROWS</h2>

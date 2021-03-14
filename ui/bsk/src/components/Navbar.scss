@@ -36,3 +36,16 @@
   max-width: 100%;
   height: 100%;
 }
+.router-link, .default-link {
+  color: inherit;
+  text-decoration: none;
+  padding: 10px 35px;
+  width: 100%;
+}
+.default-link{
+  display: flex;
+}
+
+.router-link:hover {
+  text-decoration: underline;
+}
