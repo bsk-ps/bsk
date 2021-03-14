@@ -13,7 +13,7 @@ from fastapi import (
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .transposition import columnar, railfence, row_order
+from .transposition import columnar, railfence, row_order, caesar
 from .utils.api import (
     validate_message_and_file,
     get_content,
@@ -137,5 +137,28 @@ async def columnar_transposition_decipher(
     except ValueError as e:
         raise HTTPException(400, detail=str(e))
 
+
+@router.post("/caesar/cipher")
+async def caesar_cipher(
+        message: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        key: int = Form(...),
+    ):
+    validate_message_and_file(message, message_file)
+    content = await get_content(message, message_file, False)
+
+    return '\n'.join(caesar.caesar(line, key, True) for line in content)
+
+
+@router.post("/caesar/decipher")
+async def caesar_decipher(
+        message: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        key: int = Form(...),
+    ):
+    validate_message_and_file(message, message_file)
+    content = await get_content(message, message_file, False)
+
+    return '\n'.join(caesar.caesar(line, key, False) for line in content)
 
 app.include_router(router)
