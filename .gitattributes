@@ -1,0 +1,2 @@
+; Sets line endings to LF, most notably to prevent .sh file conversion
+* text=auto eol=lf
