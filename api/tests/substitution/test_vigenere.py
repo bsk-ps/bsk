@@ -1,4 +1,4 @@
-from substitution import vigenere
+from src.substitution import vigenere
 
 examples = [
     (
