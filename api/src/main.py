@@ -14,7 +14,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from .transposition import columnar, railfence, row_order
-from substitution import caesar, vigenere
+from .substitution import caesar, vigenere
 from .utils.api import (
     validate_message_and_file,
     get_content,
