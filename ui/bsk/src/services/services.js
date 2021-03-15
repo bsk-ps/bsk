@@ -16,6 +16,10 @@ const caesarCipher = async (formdata) => await postRequest(formdata, 'caesar/cip
 
 const caesarDecipher = async (formdata) => await postRequest(formdata, 'caesar/decipher');
 
+const vigenereCipher = async (formdata) => await postRequest(formdata, 'vigenere/cipher');
+
+const vigenereDecipher = async (formdata) => await postRequest(formdata, 'vigenere/decipher');
+
 const postRequest = async (formdata, endpoint) => {
     var requestOptions = {
         method: 'POST',
@@ -56,6 +60,8 @@ export {
     rowOrderDecipher,
     caesarCipher,
     caesarDecipher,
+    vigenereCipher,
+    vigenereDecipher,
 };
 
 
