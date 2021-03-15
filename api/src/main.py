@@ -13,7 +13,7 @@ from fastapi import (
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .transposition import columnar, railfence, row_order, caesar
+from .transposition import columnar, railfence, row_order, caesar, vigenere
 from .utils.api import (
     validate_message_and_file,
     get_content,
@@ -160,5 +160,28 @@ async def caesar_decipher(
     content = await get_content(message, message_file, False)
 
     return '\n'.join(caesar.caesar(line, key, False) for line in content)
+
+@router.post("/vigenere/cipher")
+async def vigenere_cipher(
+        message: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        key: str = Form(...),
+    ):
+    validate_message_and_file(message, message_file)
+    content = await get_content(message, message_file)
+
+    return '\n'.join(vigenere.encode(line, key) for line in content)
+
+
+@router.post("/vigenere/decipher")
+async def vigenere_decipher(
+        message: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        key: str = Form(...),
+    ):
+    validate_message_and_file(message, message_file)
+    content = await get_content(message, message_file)
+
+    return '\n'.join(vigenere.decode(line, key) for line in content)
 
 app.include_router(router)
