@@ -13,7 +13,7 @@ from fastapi import (
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .transposition import columnar, railfence, row_order
+from .transposition import columnar, railfence, row_order, disrupted
 from .substitution import caesar, vigenere
 from .utils.api import (
     validate_message_and_file,
@@ -137,6 +137,34 @@ async def columnar_transposition_decipher(
         return '\n'.join(columnar.decipher(line, key) for line in content)
     except ValueError as e:
         raise HTTPException(400, detail=str(e))
+
+
+@router.post("/disrupted_transposition/cipher")
+async def disrupted_transposition_cipher(
+        message: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        key: str = Form(...),
+        remove_whitespace: bool = Form(False),
+):
+    validate_message_and_file(message, message_file)
+    content = await get_content(message, message_file, remove_whitespace)
+    key = word_to_key(key)
+
+    return '\n'.join(disrupted.cipher(line, key) for line in content)
+
+
+@router.post("/disrupted_transposition/decipher")
+async def disrupted_transposition_decipher(
+        ciphertext: Optional[str] = Form(None),
+        ciphertext_file: Optional[UploadFile] = File(None),
+        key: str = Form(...),
+        remove_whitespace: bool = Form(False),
+):
+    validate_message_and_file(ciphertext, ciphertext_file)
+    content = await get_content(ciphertext, ciphertext_file, remove_whitespace)
+    key = word_to_key(key)
+
+    return '\n'.join(disrupted.decipher(line, key) for line in content)
 
 
 @router.post("/caesar/cipher")
