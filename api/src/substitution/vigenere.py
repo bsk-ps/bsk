@@ -1,5 +1,5 @@
 def key_gen(key: str, message_len: int) -> str:
-    return key*(message_len//len(key)) + key[message_len % len(key):]
+    return key*(message_len//len(key)) + key[:message_len % len(key)]
 
 
 def encode(message: str, key: str) -> str:
