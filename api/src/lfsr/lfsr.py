@@ -10,10 +10,9 @@ def lfsr(seed: str, polynomial: tuple, n: int):
         lfsr.insert(0,'0')
      else:
         lfsr.insert(0,'1')
-     print(lfsr.pop())
+     yield lfsr.pop()
      sum=0
 
 
 
-lfsr('11001001', (8, 7, 6, 1), 17)
 
