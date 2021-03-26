@@ -1,7 +1,8 @@
 import { Route, Switch } from "react-router";
 import { Navbar } from "./components/navbar/Navbar";
-import { CryptoPartOne, CryptoPartTwo } from "./pages/home/crypto";
-import { Home } from "./pages/home/Home";
+import { Home } from "./pages/Home";
+import { CryptoPartOne } from "./pages/PartOne";
+import { CryptoPartTwo } from "./pages/PartTwo";
 
 
 function App() {

@@ -1,209 +1,116 @@
 import { useState } from 'react';
-import { railfenceCipher, railfenceDecipher, columnarTranspositionCipher, columnarTranspositionDecipher, getValidatedFormData, rowOrderCipher, rowOrderDecipher, caesarCipher, caesarDecipher, vigenereCipher, vigenereDecipher } from "../services/services";
-import { InputCard, OutputCard, RunCardWithCounter, RunCardWithNumericKey, RunCardWithTextKey } from "./Card";
-import { ButtonGroup } from "./buttonGroup/ButtonGroup";
+import { InputCardContainer, OutputCard, RunBlock } from "./Card";
+import useCipher from '../hooks/useCipher';
+import { Counter } from './counter/Counter';
+import { KeyInput } from './KeyInput';
+import useDashKey from '../hooks/useDashKey';
+import useTextKey from '../hooks/useTextKey';
+import useCounter from '../hooks/useCounter';
 
-export const ColumnarTranspositionA = () => {
-    const [form, setForm] = useState({
-        key: "",
-        data: "",
-    });
 
-    const [output, setOutput] = useState("");
+export const CipherContainer = ({ name, keyName, endpoint, keyValue, children }) => {
+    const [inputData, setInputData] = useState('');
+    const [output, setOutput, encode, decode,] = useCipher({ input: inputData, key: keyValue }, endpoint)
 
-    return (
-        <>
-            <h2 className="display-3">COLUMNAR TRANSPOSITION A</h2>
-            <div className="container">
-                <InputCard form={form} setForm={setForm} />
-                <RunCardWithNumericKey
-                    form={form}
-                    setForm={setForm}
-                    output={output}
-                    setOutput={setOutput}
-                    cipherCall={rowOrderCipher}
-                    decipherCall={rowOrderDecipher}
-                />
-                <OutputCard output={output} />
-            </div>
-        </>
-    );
+    const handleSwap = () => {
+        if (output !== "" && !(inputData instanceof File)) {
+            setOutput(inputData)
+            setInputData(output)
+        }
+    }
+
+    return <Cipher
+        name={name}
+        output={output}
+        keyName={keyName}
+        children={children}
+        onEncode={encode}
+        onDecode={decode}
+        onSwap={handleSwap}
+        onChange={text => { setInputData(text); }}
+        textInput={inputData}
+        setTextInput={setInputData}
+    />;
 }
 
-export const ColumnarTranspositionB = () => {
-    const [form, setForm] = useState({
-        key: "",
-        data: "",
-    });
-
-    const [output, setOutput] = useState("");
-
+const Cipher = ({ name, keyName, output, onChange, onSwap, onDecode, onEncode, children, textInput, setTextInput }) => {
     return (
         <>
-            <h2 className="display-3">COLUMNAR TRANSPOSITION B</h2>
-            <div className="container" style={{ maxHeight: "550px", }}>
-                <InputCard form={form} setForm={setForm} />
-                <RunCardWithTextKey
-                    form={form}
-                    setForm={setForm}
-                    output={output}
-                    setOutput={setOutput}
-                    cipherCall={columnarTranspositionCipher}
-                    decipherCall={columnarTranspositionDecipher}
-                />
-                <OutputCard output={output} />
-            </div>
-        </>
-    );
-}
-
-export const RailFence = () => {
-    const [form, setForm] = useState({
-        key: 1,
-        data: "",
-    });
-    const [output, setOutput] = useState("");
-
-
-    return (
-        <>
-            <h2 className="display-3">RAIL FENCE</h2>
+            <h2 className="display-3">{name}</h2>
             <div className="container" style={{ maxHeight: "550px" }}>
-                <InputCard form={form} setForm={setForm} />
-                <RunCardWithCounter
-                    form={form}
-                    setForm={setForm}
-                    output={output}
-                    setOutput={setOutput}
-                    cipherCall={railfenceCipher}
-                    decipherCall={railfenceDecipher}
-                />
-                <OutputCard output={output} />
-            </div>
-        </>
-    );
-}
-
-export const CaesarCipher = () => {
-    const [form, setForm] = useState({
-        key: 1,
-        data: "",
-    });
-    const [output, setOutput] = useState("");
-
-
-    return (
-        <>
-            <h2 className="display-3">CAESAR'S CIPHER</h2>
-            <div className="container" style={{ maxHeight: "550px" }}>
-                <InputCard form={form} setForm={setForm} />
-                <RunCardWithCounter
-                    form={form}
-                    setForm={setForm}
-                    output={output}
-                    setOutput={setOutput}
-                    cipherCall={caesarCipher}
-                    decipherCall={caesarDecipher}
-                />
-                <OutputCard output={output} />
-            </div>
-        </>
-    );
-}
-
-export const VigeneresCipher = () => {
-    const [form, setForm] = useState({
-        key: "",
-        data: "",
-    });
-
-    const [output, setOutput] = useState("");
-
-    return (
-        <>
-            <h2 className="display-3">VIGENERE'S CIPHER</h2>
-            <div className="container" style={{ maxHeight: "550px", }}>
-                <InputCard form={form} setForm={setForm} />
-                <RunCardWithTextKey
-                    form={form}
-                    setForm={setForm}
-                    output={output}
-                    setOutput={setOutput}
-                    cipherCall={vigenereCipher}
-                    decipherCall={vigenereDecipher}
-                />
-                <OutputCard output={output} />
-            </div>
-        </>
-    );
-}
-
-export const ColumnarTranspositionC = () => {
-    const [form, setForm] = useState({
-        key: "",
-        data: "",
-    });
-
-    const [output, setOutput] = useState("");
-
-    const handleKeyChange = (event) => {
-        setForm({
-            key: event.target.value,
-            data: form.data,
-        })
-    }
-    const handleEncode = async () => {
-        let formdata = getValidatedFormData("message_file", "message", "key", form.data, form.key);
-        formdata.append("remove_whitespace", true);
-        if (formdata) {
-            setOutput(
-                await columnarTranspositionCipher(formdata)
-            );
-        }
-    }
-    const handleDecode = async () => {
-        let formdata = getValidatedFormData("ciphertext_file", "ciphertext", "key", form.data, form.key);
-        if (formdata) {
-            setOutput(
-                await columnarTranspositionDecipher(formdata)
-            );
-        }
-    }
-
-    const handleSwap = async () => {
-        if (output !== "" && !(form.data instanceof File)) {
-            setOutput(form.data)
-            setForm({
-                key: form.key,
-                data: output,
-            })
-        }
-    }
-    return (
-        <>
-            <h2 className="display-3">COLUMNAR TRANSPOSITION C</h2>
-            <div className="container" style={{ maxHeight: "550px", }}>
-                <InputCard form={form} setForm={setForm} />
+                <InputCardContainer onChange={onChange} textInput={textInput}
+                    setTextInput={setTextInput} />
                 <div style={{ margin: "0 25px" }} className="paper card">
-                    <h2 className="display-2">TEXT KEY</h2>
+                    <h2 className="display-2">{keyName}</h2>
                     <hr />
                     <div style={{ height: "200px" }}>
-                        <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
+                        {children}
                     </div>
                     <hr />
-                    <h2 className="display-2">RUN</h2>
-                    <ButtonGroup>
-                        <button onClick={handleEncode} className="btn-primary">Encode</button>
-                        <button onClick={handleSwap} className="btn-icon">
-                            <span className="material-icons">
-                                swap_horiz
-                            </span>
-                        </button>
-                        <button onClick={handleDecode} className="btn-primary">Decode</button>
-                    </ButtonGroup>
+                    <RunBlock onSwap={onSwap} onEncode={onEncode} onDecode={onDecode} />
                 </div>
                 <OutputCard output={output} />
             </div>
         </>
     );
 }
+
+
+const RailFence = () => {
+    const [count, increment, decrement] = useCounter()
+
+    return (
+        <CipherContainer name='Rail Fence' keyName='KEY' keyValue={count} endpoint='railfence'>
+            <Counter onIncrement={increment} onDecrement={decrement} count={count} />
+        </CipherContainer>
+    )
+}
+
+const ColumnarTranspositionA = () => {
+    const [key, handleKeyChange] = useDashKey()
+
+    return (
+        <CipherContainer name='Columnar Transposition A' keyName='KEY' keyValue={key} endpoint='row_order'>
+            <KeyInput keyValue={key} onKeyChange={handleKeyChange} showPreview />
+        </CipherContainer>
+    )
+}
+
+const ColumnarTranspositionB = () => {
+    const [key, handleKeyChange] = useDashKey()
+
+    return (
+        <CipherContainer name='Columnar Transposition B' keyName='TEXT KEY' keyValue={key} endpoint='columnar_transposition'>
+            <KeyInput keyValue={key} onKeyChange={handleKeyChange} />
+        </CipherContainer>
+    )
+
+}
+const ColumnarTranspositionC = () => {
+    const [key, handleKeyChange] = useTextKey()
+
+    return (
+        <CipherContainer name='Disrupted Transposition' keyName='TEXT KEY' keyValue={key} endpoint='disrupted_transposition'>
+            <KeyInput keyValue={key} onKeyChange={handleKeyChange} />
+        </CipherContainer>
+    )
+}
+const CaesarCipher = () => {
+    const [count, increment, decrement] = useCounter()
+
+    return (
+        <CipherContainer name="Caesar's Cipher" keyName='KEY' keyValue={count} endpoint='caesar'>
+            <Counter onIncrement={increment} onDecrement={decrement} count={count} />
+        </CipherContainer>
+    )
+}
+const VigeneresCipher = () => {
+    const [key, handleKeyChange] = useTextKey()
+
+    return (
+        <CipherContainer name='Vigenere' keyName='TEXT KEY' keyValue={key} endpoint='vigenere'>
+            <KeyInput keyValue={key} onKeyChange={handleKeyChange} />
+        </CipherContainer>
+    )
+}
+export { RailFence, ColumnarTranspositionA, ColumnarTranspositionB, ColumnarTranspositionC, CaesarCipher, VigeneresCipher }
