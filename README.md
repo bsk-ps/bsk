@@ -1,5 +1,13 @@
-# bsk
+# Encode&Decode app
+### Avaible tools
+* Rail Fence
+* Row order
+* Columnar transposition
+* Disrupted transposition
+* Caesar Cipher
+* Vigenere Cipher
 
+![image](https://github.com/bsk-ps/bsk/blob/main/example1.png)
 ### Prerequisites
 - Install [Docker](https://www.docker.com/)
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
