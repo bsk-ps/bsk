@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .transposition import columnar, railfence, row_order, disrupted
 from .substitution import caesar, vigenere
+from .lfsr import lfsr
 from .utils.api import (
     validate_message_and_file,
     get_content,
@@ -213,5 +214,17 @@ async def vigenere_decipher(
     content = await get_content(message, message_file, False)
 
     return '\n'.join(vigenere.decode(line, key) for line in content)
+
+@router.post("/lfsr/generate")
+async def lfsr_generator(
+        seed: Optional[str] = Form(None),
+        message_file: Optional[UploadFile] = File(None),
+        polynomial: tulpe = Form(...),
+        n: int = Form(...),
+):
+    validate_message_and_file(seed, message_file)
+    content = await get_content(seed, message_file, False)
+
+    return '\n'.join(lfsr.lfsr(line,polynomial, n) for line in content)
 
 app.include_router(router)
