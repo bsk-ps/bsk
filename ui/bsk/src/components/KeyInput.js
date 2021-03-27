@@ -6,7 +6,7 @@ const PolynomialComponent =({keyValue}) =>{
           items.push(<>x<sup>{value}</sup>+</>)
       }
       else if(index+1 === chars.length){
-        items.push(<>x<sup>{value}</sup>+</>)
+        items.push(<>x<sup>{value}</sup></>)
       }}
     
       return (
