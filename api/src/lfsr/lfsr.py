@@ -36,9 +36,5 @@ def lfsr(seed: str, polynomial: tuple, n: int):
     return cipher
 
 
-if __name__ == "__main__":
-    print(lfsr("1011011",(8,7,6,1),50))
-
-
 
 
