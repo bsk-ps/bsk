@@ -12,7 +12,7 @@ import useCounter from '../hooks/useCounter';
 export const CipherContainer = ({ name, keyName, endpoint, keyValue, children }) => {
     const [inputData, setInputData] = useState('');
     const [output, setOutput, encode, decode,] = useCipher({ input: inputData, key: keyValue }, endpoint)
-    console.log(typeof(keyValue))
+    console.log(typeof (keyValue))
 
     const handleSwap = () => {
         if (output !== "" && !(inputData instanceof File)) {
@@ -115,12 +115,12 @@ const VigeneresCipher = () => {
         </CipherContainer>
     )
 }
-const LFSRGenerator = () =>{
-    const[key, handleKeyChange] = usePolynomialKey()
-    return (
-        <CipherContainer name='LFSR Generator' keyName='KEY' keyValue={key} endpoint='row_order'>
-            <KeyInput keyValue={key} onKeyChange={handleKeyChange} showPolynomial />
-        </CipherContainer>
-    )
+
+export {
+    RailFence,
+    ColumnarTranspositionA,
+    ColumnarTranspositionB,
+    ColumnarTranspositionC,
+    CaesarCipher,
+    VigeneresCipher,
 }
-export { RailFence, ColumnarTranspositionA, ColumnarTranspositionB, ColumnarTranspositionC, CaesarCipher, VigeneresCipher, LFSRGenerator, }

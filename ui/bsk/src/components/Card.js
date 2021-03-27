@@ -1,4 +1,4 @@
-import { createRef, useRef, useState } from 'react';
+import { createRef, useState } from 'react';
 import { ButtonGroup } from "./buttonGroup/ButtonGroup";
 
 
@@ -55,71 +55,6 @@ const InputCard = ({ value, onChange, onFileChanged, isFilePicked, fileRef, file
     );
 }
 
-const RunCardWithNumericKey = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
-
-    const handleKeyChange = (event) => {
-        let input = event.target.value;
-        input = input.replace(/\s/g, '-');
-        setForm({
-            key: input,
-            data: form.data,
-        })
-    }
-
-    return (
-        <div style={{ margin: "0 25px" }} className="paper card">
-            <h2 className="display-2">KEY</h2>
-            <hr />
-            <div style={{ height: "200px" }}>
-                <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
-                <div className="preview code">
-                    {form.key}
-                </div>
-            </div>
-            <hr />
-            <RunBlock
-                form={form}
-                setForm={setForm}
-                output={output}
-                setOutput={setOutput}
-                cipherCall={cipherCall}
-                decipherCall={decipherCall}
-            />
-        </div>
-    );
-}
-
-const RunCardWithTextKey = ({ form, setForm, output, setOutput, cipherCall, decipherCall }) => {
-
-    const handleKeyChange = (event) => {
-        let input = event.target.value;
-        input = input.replace(/\s/g, '-');
-        setForm({
-            key: input,
-            data: form.data,
-        })
-    }
-
-
-    return (
-        <div style={{ margin: "0 25px" }} className="paper card">
-            <h2 className="display-2">TEXT KEY</h2>
-            <hr />
-            <div style={{ height: "200px" }}>
-                <input placeholder="Enter key" onChange={handleKeyChange} className="key-input" />
-            </div>
-            <hr />
-            <RunBlock
-                form={form}
-                setForm={setForm}
-                output={output}
-                setOutput={setOutput}
-                cipherCall={cipherCall}
-                decipherCall={decipherCall}
-            />
-        </div>
-    );
-}
 
 const OutputCard = ({ output }) => {
     const downloadToTxt = () => {
@@ -170,4 +105,4 @@ const RunBlock = ({ onSwap, onEncode, onDecode }) => {
         </>
     );
 }
-export { InputCard, OutputCard, RunCardWithNumericKey, RunCardWithTextKey, RunBlock }
+export { InputCard, OutputCard, RunBlock }
