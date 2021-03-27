@@ -33,7 +33,9 @@ def lfsr(seed: str, polynomial: tuple, n: int):
         lfsr.insert(0,'1')
      cipher.append(lfsr.pop())
      sum=0
-    return cipher
+    return "".join(cipher)
+
+
 
 
 
