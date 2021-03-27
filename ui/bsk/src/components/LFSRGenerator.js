@@ -1,6 +1,5 @@
-import { useState } from "react";
 import useCounter from "../hooks/useCounter";
-import useNumberValidation from "../hooks/useNumberValidation";
+import useStateWithValidation from "../hooks/useStateWithValidation";
 import { RunBlock } from "./Card";
 import { Counter } from "./counter/Counter";
 
@@ -14,9 +13,11 @@ const PolynomialPreview = ({ value }) => {
     </h2>
 }
 
+
 export const LFSRGenerator = () => {
     const [count, increment, decrement] = useCounter()
-    const [value, handlePolynomialInput] = useNumberValidation()
+    const [polymonial, handlePolynomialInput] = useStateWithValidation(/^[0-9\b]+$/)
+    const [binary, handleBinaryInput] = useStateWithValidation(/^[0-1\b]+$/)
 
     return (
         <>
@@ -28,16 +29,17 @@ export const LFSRGenerator = () => {
                     justifyContent: 'space-between'
                 }}>
                     <div className="paper card">
-                        <PolynomialPreview value={value} />
+                        <PolynomialPreview value={polymonial} />
                         <hr />
-                        <input value={value} onChange={handlePolynomialInput} className="key-input" placeholder="eg. 356" />
+                        <input value={polymonial} onChange={handlePolynomialInput} className="key-input" placeholder="eg. 356" />
                     </div>
                     <div className="paper card">
-                        <h2 className="display-2">INITIAL BITS</h2>
+                        <h2 className="display-2">
+                            {binary ? binary : 'INITIAL BINARY'}
+                        </h2>
                         <hr />
-                        <input className="key-input" placeholder="eg. 010011" />
+                        <input value={binary} onChange={handleBinaryInput} className="key-input" placeholder="eg. 010011" />
                     </div>
-
                 </div>
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">NO. INTERATIONS</h2>
