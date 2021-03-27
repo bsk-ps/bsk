@@ -1,11 +1,22 @@
+import { useState } from "react";
 import useCounter from "../hooks/useCounter";
-import usePolynomialKey from "../hooks/usePolynomialKey"
+import useNumberValidation from "../hooks/useNumberValidation";
 import { RunBlock } from "./Card";
 import { Counter } from "./counter/Counter";
 
+const PolynomialPreview = ({ value }) => {
+
+    return <h2 className="display-2">
+        {value ?
+            value.split('').map((val, index) => <>{index === 0 ? '' : '+'}x<sup>{val}</sup></>)
+            : (<>POLYNOMIAL<sup></sup></>)
+        }
+    </h2>
+}
 
 export const LFSRGenerator = () => {
     const [count, increment, decrement] = useCounter()
+    const [value, handlePolynomialInput] = useNumberValidation()
 
     return (
         <>
@@ -15,16 +26,16 @@ export const LFSRGenerator = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between'
-                }}> 
+                }}>
                     <div className="paper card">
-                        <h2 className="display-2">POLYNOMIAL</h2>
+                        <PolynomialPreview value={value} />
                         <hr />
-                        <input className="key-input" placeholder="eg. 356"/>
+                        <input value={value} onChange={handlePolynomialInput} className="key-input" placeholder="eg. 356" />
                     </div>
                     <div className="paper card">
                         <h2 className="display-2">INITIAL BITS</h2>
                         <hr />
-                        <input className="key-input" placeholder="eg. 010011"/>
+                        <input className="key-input" placeholder="eg. 010011" />
                     </div>
 
                 </div>
@@ -40,7 +51,6 @@ export const LFSRGenerator = () => {
                 <div className="paper card">
                     <h2 className="display-2">OUTPUT</h2>
                     <hr />
-
                 </div>
             </div>
         </>

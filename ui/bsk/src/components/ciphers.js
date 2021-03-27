@@ -11,7 +11,6 @@ import useCounter from '../hooks/useCounter';
 export const CipherContainer = ({ name, keyName, endpoint, keyValue, children }) => {
     const [inputData, setInputData] = useState('');
     const [output, setOutput, encode, decode,] = useCipher({ input: inputData, key: keyValue }, endpoint)
-    console.log(typeof (keyValue))
 
     const handleSwap = () => {
         if (output !== "" && !(inputData instanceof File)) {
