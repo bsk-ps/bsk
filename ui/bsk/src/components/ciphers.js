@@ -5,7 +5,6 @@ import { Counter } from './counter/Counter';
 import { KeyInput } from './KeyInput';
 import useDashKey from '../hooks/useDashKey';
 import useTextKey from '../hooks/useTextKey';
-import usePolynomialKey from '../hooks/usePolynomialKey';
 import useCounter from '../hooks/useCounter';
 
 
