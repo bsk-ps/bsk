@@ -215,16 +215,18 @@ async def vigenere_decipher(
 
     return '\n'.join(vigenere.decode(line, key) for line in content)
 
+
 @router.post("/lfsr/generate")
 async def lfsr_generator(
         seed: Optional[str] = Form(None),
         message_file: Optional[UploadFile] = File(None),
-        polynomial: tulpe = Form(...),
+        polynomial: tuple = Form(...),
         n: int = Form(...),
 ):
     validate_message_and_file(seed, message_file)
     content = await get_content(seed, message_file, False)
 
-    return '\n'.join(lfsr.lfsr(line,polynomial, n) for line in content)
+    return '\n'.join(lfsr.lfsr(line, polynomial, n) for line in content)
+
 
 app.include_router(router)
