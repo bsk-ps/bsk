@@ -21,7 +21,6 @@ export const InputCardContainer = ({ onChange, textInput, setTextInput }) => {
         onChange(event.target.value)
     }
 
-
     return (
         <InputCard
             value={textInput}
@@ -94,7 +93,7 @@ const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
         <>
             <h1 className="display-2">
                 {polynomial ?
-                    polynomial.split('').map((val, index) => <>{index === 0 ? '' : '+'}x<sup>{val}</sup></>)
+                    polynomial.split(' ').map((val, index) => <span key={index}>{index === 0 ? '1+' : '+'}x<sup>{val}</sup></span>)
                     : (<>POLYNOMIAL<sup></sup></>)
                 }
             </h1>

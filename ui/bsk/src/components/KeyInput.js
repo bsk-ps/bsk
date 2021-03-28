@@ -7,7 +7,6 @@ const KeyInput = ({ keyValue, onKeyChange, showPreview=false }) => {
                     {keyValue}
                 </div> : <></>
             }
-            
         </>
     );
 }

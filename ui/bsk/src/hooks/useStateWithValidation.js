@@ -5,7 +5,9 @@ export default function useStateWithValidation(regex) {
 
     const handleSetState = (event) => {
         if (event.target.value === '' || regex.test(event.target.value)) {
-            setState(event.target.value)
+            if (!(/\s\s+$/.test(event.target.value))) {
+                setState(event.target.value)
+            }
         }
     }
 
