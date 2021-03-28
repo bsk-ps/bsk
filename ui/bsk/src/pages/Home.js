@@ -1,5 +1,7 @@
 import "./Home.scss";
 import { CaesarCipher, ColumnarTranspositionA, ColumnarTranspositionB, ColumnarTranspositionC, RailFence, VigeneresCipher } from '../components/ciphers'
+import { LFSRGenerator } from "../components/LFSRGenerator";
+import { StreamCipher } from "../components/StreamCipher";
 export const Home = () => {
     return (
         <div className="home-content">
@@ -12,6 +14,10 @@ export const Home = () => {
                 </div>
                 <h1 className="display-1">Kryptografia</h1>
                 <div style={{ height: "25px" }}></div>
+                <LFSRGenerator/>
+                <div style={{ height: "45px" }}></div>
+                <StreamCipher/>
+                <div style={{ height: "45px" }}></div>
                 <RailFence />
                 <div style={{ height: "45px" }}></div>
                 <ColumnarTranspositionA />
@@ -23,6 +29,7 @@ export const Home = () => {
                 <CaesarCipher />
                 <div style={{ height: "45px" }}></div>
                 <VigeneresCipher />
+                
             </div>
         </div>
     );

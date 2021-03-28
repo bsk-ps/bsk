@@ -111,17 +111,29 @@ const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
 
 
 const BinaryCard = ({ binary, onBinaryInput }) => {
+    const [check, setCheck] = useState(true)
+
+    const handleCheckboxChange = event => {
+        setCheck(event.target.checked)
+    }
+
     return (
         <>
-            <h1 className="display-2">
-                {binary ? binary : 'INITIAL BINARY'}
+            <h1 className="display-2" style={check?{}:{color: 'grey'}}>
+                {binary
+                    ? binary :
+                    (<>
+                    <input checked={check} onChange={handleCheckboxChange} className="checkbox-input" type="checkbox" />
+                    INITIAL BINARY
+                    </>)
+                }
             </h1>
             <hr />
             <div style={{
                 marginBlockStart: '5px',
                 marginBlockEnd: '10px',
             }}>
-                <input value={binary} onChange={onBinaryInput} className="key-input" placeholder="eg. 010011" />
+                <input value={binary} onChange={onBinaryInput} className="key-input" placeholder="eg. 010011" disabled={!check} />
             </div>
         </>
     )
