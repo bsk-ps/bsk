@@ -12,15 +12,19 @@ export const LFSRGenerator = () => {
 
     return (
         <>
-            <h2 className="display-3">LFSRGenerator</h2>
+            <h2 className="display-3">LFSR Generator</h2>
             <div className="container" style={{ maxHeight: "550px" }}>
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between'
                 }}>
-                    <PolynomialCard polynomial={polynomial} onPolynomialInput={handlePolynomialInput}/>
-                    <BinaryCard binary={binary} onBinaryInput={handleBinaryInput}/>
+                    <div className="paper card">
+                        <PolynomialCard polynomial={polynomial} onPolynomialInput={handlePolynomialInput} />
+                    </div>
+                    <div className="paper card">
+                        <BinaryCard binary={binary} onBinaryInput={handleBinaryInput} />
+                    </div>
                 </div>
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">NO. INTERATIONS</h2>

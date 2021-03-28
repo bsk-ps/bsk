@@ -56,18 +56,20 @@ const InputCard = ({ value, onChange, onFileChanged, isFilePicked, fileRef, file
 }
 
 
-const OutputCard = ({ output }) => {
-    const downloadToTxt = () => {
-        if (output.length > 0) {
-            const element = document.createElement("a");
+const downloadToTxt = (output) => {
+    if (output.length > 0) {
+        const element = document.createElement("a");
 
-            const file = new Blob([{ output }.output], { type: 'text/plain; charset=utf-8' });
-            element.href = URL.createObjectURL(file);
-            element.download = "output.txt";
-            document.body.appendChild(element);
-            element.click();
-        }
+        const file = new Blob([{ output }.output], { type: 'text/plain; charset=utf-8' });
+        element.href = URL.createObjectURL(file);
+        element.download = "output.txt";
+        document.body.appendChild(element);
+        element.click();
     }
+}
+
+const OutputCard = ({ output }) => {
+
     return (
         <div className="paper card" style={{ whiteSpace: "pre-line" }}>
             <h2 className="display-2">OUTPUT</h2>
@@ -89,28 +91,74 @@ const OutputCard = ({ output }) => {
 
 const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
     return (
-        <div className="paper card">
-            <h2 className="display-2">
+        <>
+            <h1 className="display-2">
                 {polynomial ?
                     polynomial.split('').map((val, index) => <>{index === 0 ? '' : '+'}x<sup>{val}</sup></>)
                     : (<>POLYNOMIAL<sup></sup></>)
                 }
-                <hr />
+            </h1>
+            <hr />
+            <div style={{
+                marginBlockStart: '5px',
+                marginBlockEnd: '10px',
+            }}>
                 <input value={polynomial} onChange={onPolynomialInput} className="key-input" placeholder="eg. 356" />
-            </h2>
-        </div>
+            </div>
+        </>
     )
 }
 
 
 const BinaryCard = ({ binary, onBinaryInput }) => {
     return (
-        <div className="paper card">
-            <h2 className="display-2">
+        <>
+            <h1 className="display-2">
                 {binary ? binary : 'INITIAL BINARY'}
-                <hr />
+            </h1>
+            <hr />
+            <div style={{
+                marginBlockStart: '5px',
+                marginBlockEnd: '10px',
+            }}>
                 <input value={binary} onChange={onBinaryInput} className="key-input" placeholder="eg. 010011" />
-            </h2>
+            </div>
+        </>
+    )
+}
+
+const FileInputCard = ({ onChange }) => {
+    const fileInputRef = createRef()
+
+    const [isFilePicked, setIsFilePicked] = useState(false);
+    const [fileData, setFileData] = useState({});
+
+    const handleFileChanged = (event) => {
+        onChange(event.target.files[0]);
+        setFileData(fileInputRef.current.files[0]);
+        event.preventDefault();
+        event.target.value = null;
+        setIsFilePicked(true);
+    };
+    return (
+        <div className="paper card">
+            <h2 className="display-2">CHOOSE FILE</h2>
+            <hr />
+            <div className="flex-center" style={{ height: "100%", flexDirection: "column" }}>
+                <div className="flex-center">
+                    <input ref={fileInputRef} onChange={handleFileChanged} type="file" name="file" className="btn-file" />
+                </div>
+                {isFilePicked ? (
+                    <div>
+                        <p>Filename: {fileData.name}</p>
+                        <p>Filetype: {fileData.type}</p>
+                        <p>Size in bytes: {fileData.size}</p>
+                    </div>
+                ) : (
+                    <p>Select a file to show details</p>
+                )}
+
+            </div>
         </div>
     )
 }
@@ -131,4 +179,4 @@ const RunBlock = ({ onSwap, onEncode, onDecode }) => {
         </>
     );
 }
-export { InputCard, OutputCard, RunBlock, PolynomialCard, BinaryCard }
+export { InputCard, OutputCard, RunBlock, PolynomialCard, BinaryCard, FileInputCard, downloadToTxt }
