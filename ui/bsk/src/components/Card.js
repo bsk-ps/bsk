@@ -87,7 +87,33 @@ const OutputCard = ({ output }) => {
 }
 
 
+const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
+    return (
+        <div className="paper card">
+            <h2 className="display-2">
+                {polynomial ?
+                    polynomial.split('').map((val, index) => <>{index === 0 ? '' : '+'}x<sup>{val}</sup></>)
+                    : (<>POLYNOMIAL<sup></sup></>)
+                }
+                <hr />
+                <input value={polynomial} onChange={onPolynomialInput} className="key-input" placeholder="eg. 356" />
+            </h2>
+        </div>
+    )
+}
 
+
+const BinaryCard = ({ binary, onBinaryInput }) => {
+    return (
+        <div className="paper card">
+            <h2 className="display-2">
+                {binary ? binary : 'INITIAL BINARY'}
+                <hr />
+                <input value={binary} onChange={onBinaryInput} className="key-input" placeholder="eg. 010011" />
+            </h2>
+        </div>
+    )
+}
 const RunBlock = ({ onSwap, onEncode, onDecode }) => {
 
     return (
@@ -105,4 +131,4 @@ const RunBlock = ({ onSwap, onEncode, onDecode }) => {
         </>
     );
 }
-export { InputCard, OutputCard, RunBlock }
+export { InputCard, OutputCard, RunBlock, PolynomialCard, BinaryCard }

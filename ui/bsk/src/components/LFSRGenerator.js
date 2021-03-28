@@ -1,22 +1,13 @@
 import useCounter from "../hooks/useCounter";
 import useStateWithValidation from "../hooks/useStateWithValidation";
-import { RunBlock } from "./Card";
+import { BinaryCard, PolynomialCard, RunBlock } from "./Card";
 import { Counter } from "./counter/Counter";
 
-const PolynomialPreview = ({ value }) => {
-
-    return <h2 className="display-2">
-        {value ?
-            value.split('').map((val, index) => <>{index === 0 ? '' : '+'}x<sup>{val}</sup></>)
-            : (<>POLYNOMIAL<sup></sup></>)
-        }
-    </h2>
-}
 
 
 export const LFSRGenerator = () => {
     const [count, increment, decrement] = useCounter()
-    const [polymonial, handlePolynomialInput] = useStateWithValidation(/^[0-9\b]+$/)
+    const [polynomial, handlePolynomialInput] = useStateWithValidation(/^[0-9\b]+$/)
     const [binary, handleBinaryInput] = useStateWithValidation(/^[0-1\b]+$/)
 
     return (
@@ -28,18 +19,8 @@ export const LFSRGenerator = () => {
                     flexDirection: 'column',
                     justifyContent: 'space-between'
                 }}>
-                    <div className="paper card">
-                        <PolynomialPreview value={polymonial} />
-                        <hr />
-                        <input value={polymonial} onChange={handlePolynomialInput} className="key-input" placeholder="eg. 356" />
-                    </div>
-                    <div className="paper card">
-                        <h2 className="display-2">
-                            {binary ? binary : 'INITIAL BINARY'}
-                        </h2>
-                        <hr />
-                        <input value={binary} onChange={handleBinaryInput} className="key-input" placeholder="eg. 010011" />
-                    </div>
+                    <PolynomialCard polynomial={polynomial} onPolynomialInput={handlePolynomialInput}/>
+                    <BinaryCard binary={binary} onBinaryInput={handleBinaryInput}/>
                 </div>
                 <div style={{ margin: "0 25px" }} className="paper card">
                     <h2 className="display-2">NO. INTERATIONS</h2>
