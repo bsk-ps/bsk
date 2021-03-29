@@ -7,7 +7,7 @@ import { Counter } from "./counter/Counter";
 
 export const LFSRGenerator = () => {
     const [count, increment, decrement] = useCounter()
-    const [polynomial, handlePolynomialInput] = useStateWithValidation(/^[0-9\b]+/)
+    const [polynomial, handlePolynomialInput] = useStateWithValidation(/^(\s*[0-9]+\s*)+$/)
     const [binary, handleBinaryInput] = useStateWithValidation(/^[0-1\b]+$/)
 
     return (
