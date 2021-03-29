@@ -1,6 +1,7 @@
 from typing import Optional
 
 from os import getenv
+from random import choices
 
 from fastapi import (
     FastAPI,
@@ -10,12 +11,12 @@ from fastapi import (
     HTTPException,
     APIRouter,
 )
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from .transposition import columnar, railfence, row_order, disrupted
 from .substitution import caesar, vigenere
-from .lfsr import lfsr
+from .lfsr import stream_cipher, LFSR
 from .utils.api import (
     validate_message_and_file,
     get_content,
@@ -217,16 +218,43 @@ async def vigenere_decipher(
 
 
 @router.post("/lfsr/generate")
-async def lfsr_generator(
-        seed: Optional[str] = Form(None),
-        message_file: Optional[UploadFile] = File(None),
-        polynomial: tuple = Form(...),
+async def lfsr_generate_key(
+        seed: Optional[int] = Form(None),
+        polynomial: str = Form(...),
         n: int = Form(...),
 ):
-    validate_message_and_file(seed, message_file)
-    content = await get_content(seed, message_file, False)
+    try:
+        polynomial = list(set(map(int, polynomial.split(' '))))
+        degree = max(polynomial) + 1
+        if seed is None:
+            seed = choices([0, 1], k=degree)
+        else:
+            seed = list(map(int, list(bin(seed)[2:])))
+    except (ValueError, TypeError) as _:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid seed or polynomial"
+        )
 
-    return '\n'.join(lfsr.lfsr(line, polynomial, n) for line in content)
+    lfsr = LFSR(seed, polynomial)
+    result_hex = bytes(lfsr.generate_n_bytes(n)).hex()
+    hex_iter = iter(result_hex)
+    return ' '.join(a+b for a, b in zip(hex_iter, hex_iter))
+
+
+@router.post("/lfsr/decipher", summary="Lfsr Stream Decipher")
+@router.post("/lfsr/cipher")
+async def lfsr_stream_cipher(
+        message_file: Optional[UploadFile] = File(None),
+        key: str = Form(...),
+):
+    return Response(
+        content=stream_cipher.encrypt(
+            (await message_file.read()),
+            bytes.fromhex(key.replace(' ', '')),
+        ),
+        media_type='application/octet-stream'
+    )
 
 
 app.include_router(router)

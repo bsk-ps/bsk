@@ -1,15 +1,13 @@
-from .lfsr import lfsr
+from typing import Union
+
+from itertools import cycle
 
 
-def encrypt(seed: str, text: str, polynomial: tuple):
-    cipher = []
-    sum_ = 0
-    stream = lfsr(seed, polynomial, len(text))
-    for i in range(len(stream)):
-        sum_ += int(stream[i]) + int(text[i])
-        if sum_ % 2 == 0:
-            cipher.append('0')
-        else:
-            cipher.append('1')
-        sum_ = 0
-    return ''.join(cipher)
+def encrypt(
+        message: Union[bytes, list[int]],
+        key: Union[bytes, list[int]]
+) -> bytes:
+    return bytes([message_byte ^ key_byte for message_byte, key_byte in zip(message, cycle(key))])
+
+
+decrypt = encrypt
