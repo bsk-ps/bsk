@@ -27,10 +27,4 @@ class LFSR:
         """
         Returns a list of n unsigned byte-integers (integers with values between 0 and 255)
         """
-        result = []
-        for _ in range(n):
-            bit_list = []
-            for i in range(8):
-                bit_list.append(next(self.generate()))
-            result.append(reduce(lambda byte, bit: byte << 1 | bit, bit_list))
-        return result
+        return [reduce(lambda byte, bit: byte << 1 | bit, self.generate_n(8)) for _ in range(n)]
