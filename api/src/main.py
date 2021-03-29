@@ -230,7 +230,8 @@ async def lfsr_generate_key(
             seed = choices([0, 1], k=degree)
         else:
             seed = list(map(int, list(bin(seed)[2:])))
-    except (ValueError, TypeError) as _:
+        seed = seed + [0] * (degree - len(seed))
+    except (ValueError, TypeError):
         raise HTTPException(
             status_code=400,
             detail="Invalid seed or polynomial"
