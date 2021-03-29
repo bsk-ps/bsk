@@ -10,12 +10,14 @@ const postRequest = async (formdata, endpoint) => {
 
     const response = await fetch(`${apiURL}/${endpoint}`, requestOptions);
 
-    const body = await response.json();
     if (response.status === 400) {
+        const body = await response.json();
         return await body["detail"]
     }
-    return await body;
+    return response;
 }
+
+
 
 function getValidatedFormData(fileKey, textKey, key, formMessage, formKey) {
     if ((formMessage.length > 0 || formMessage instanceof File) && (formKey.length > 0 || formKey > 0)) {
@@ -31,7 +33,14 @@ function getValidatedFormData(fileKey, textKey, key, formMessage, formKey) {
     return null;
 }
 
+function getBlobURL(data) {
+    if (data) {
+        var url = URL.createObjectURL(data);
+        return url;
+    }
+}
 export {
     getValidatedFormData,
-    postRequest
+    postRequest,
+    getBlobURL,
 };

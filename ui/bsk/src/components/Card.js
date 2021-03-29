@@ -1,4 +1,4 @@
-import { createRef, useState } from 'react';
+import { createRef, useRef, useState } from 'react';
 import { ButtonGroup } from "./buttonGroup/ButtonGroup";
 
 
@@ -93,8 +93,9 @@ const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
         <>
             <h1 className="display-2">
                 {polynomial ?
-                    polynomial.split(' ').map((val, index) => <span key={index}>{index === 0 ? '1+' : '+'}x<sup>{val}</sup></span>)
-                    : (<>POLYNOMIAL<sup></sup></>)
+                    polynomial.split(' ')
+                        .map((val, index) =>
+                            (<span key={index}>{index === 0 ? '' : '+'}x<sup>{val}</sup></span>)) : (<>POLYNOMIAL<sup></sup></>)
                 }
             </h1>
             <hr />
@@ -109,20 +110,20 @@ const PolynomialCard = ({ polynomial, onPolynomialInput }) => {
 }
 
 
-const BinaryCard = ({ binary, onBinaryInput }) => {
-    const [check, setCheck] = useState(true)
+const BinaryCard = ({ value, binary, onBinaryInput }) => {
+    const [check, setCheck] = useState(false)
 
     const handleCheckboxChange = event => {
         setCheck(event.target.checked)
     }
 
     return (
-        <>
-            <h1 className="display-2" style={check?{}:{color: 'grey'}}>
+        <div className={`paper card ${check ? binary ? "card-ok" : "card-error" : ""}`}>
+            <h1 className="display-2" style={check ? {} : { color: 'grey' }}>
                 {binary
                     ? binary :
                     (<>
-                    <input checked={check} onChange={handleCheckboxChange} className="checkbox-input" type="checkbox" />
+                        <input checked={check} onChange={handleCheckboxChange} className="checkbox-input" type="checkbox" />
                     INITIAL BINARY
                     </>)
                 }
@@ -132,9 +133,9 @@ const BinaryCard = ({ binary, onBinaryInput }) => {
                 marginBlockStart: '5px',
                 marginBlockEnd: '10px',
             }}>
-                <input value={binary} onChange={onBinaryInput} className="key-input" placeholder="eg. 010011" disabled={!check} />
+                <input value={value} onChange={onBinaryInput} className="key-input" placeholder="eg. 6" disabled={!check} />
             </div>
-        </>
+        </div >
     )
 }
 
@@ -160,34 +161,34 @@ const FileInputCard = ({ onChange }) => {
                     <input ref={fileInputRef} onChange={handleFileChanged} type="file" name="file" className="btn-file" />
                 </div>
                 {isFilePicked ? (
-                    <div>
-                        <p>Filename: {fileData.name}</p>
-                        <p>Filetype: {fileData.type}</p>
-                        <p>Size in bytes: {fileData.size}</p>
-                    </div>
+                    <p>Filename: {fileData.name}</p>
                 ) : (
                     <p>Select a file to show details</p>
                 )}
-
             </div>
         </div>
     )
 }
-const RunBlock = ({ onSwap, onEncode, onDecode }) => {
+const RunBlock = ({ onSwap, onEncode, onDecode, children }) => {
 
     return (
         <>
             <h2 className="display-2">RUN</h2>
-            <ButtonGroup>
-                <button onClick={onEncode} className="btn-primary">Encode</button>
-                <button onClick={onSwap} className="btn-icon">
-                    <span className="material-icons">
-                        swap_horiz
-                </span>
-                </button>
-                <button onClick={onDecode} className="btn-primary">Decode</button>
-            </ButtonGroup>
+            {children ? children :
+                <ButtonGroup>
+                    <button onClick={onEncode} className="btn-primary">Encode</button>
+                    <button onClick={onSwap} className="btn-icon">
+                        <span className="material-icons">
+                            swap_horiz
+                        </span>
+                    </button>
+                    <button onClick={onDecode} className="btn-primary">Decode</button>
+                </ButtonGroup>
+            }
+
         </>
     );
 }
+
+
 export { InputCard, OutputCard, RunBlock, PolynomialCard, BinaryCard, FileInputCard, downloadToTxt }

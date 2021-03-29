@@ -67,6 +67,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   width: 270px;
   hr {
     width: 100%;
@@ -83,18 +84,52 @@
   }
 }
 
-.key-input{
+.key-input {
   border: none;
   width: 100%;
   font-size: 17px;
-  &:focus{
+  background-color: white;
+  &:focus {
+    outline: none;
+  }
+}
+.simple-input{
+  border: none;
+  background-color: white;
+  text-align: center;
+  &:focus {
     outline: none;
   }
 }
 
-.preview{
+.preview {
   margin: 10px 0;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 20px;
-  
+}
+
+.card-ok {
+  box-shadow: 3px 4px 8px 1px #75c175;
+  transition: 1000ms;
+}
+
+.card-error {
+  box-shadow: 3px 4px 8px 1px #d07575;
+  transition: 1000ms;
+}
+
+.copy-btn{
+  color: grey;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  border-radius: 50%;
+  padding: 10px;
+  &:hover{
+    background-color: #dbdbdbc9;
+    transition: 500ms;
+  }
 }

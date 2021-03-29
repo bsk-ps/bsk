@@ -1,36 +1,67 @@
-import useStateWithValidation from "../hooks/useStateWithValidation"
-import { FileInputCard, PolynomialCard, RunBlock } from "./Card"
+import { useState } from "react"
+import useCipher from "../hooks/useCipher"
+import useGlitchEffect from "../hooks/useGlitchEffect"
+import useTextKey from "../hooks/useTextKey"
+import { FileInputCard, RunBlock } from "./Card"
+import { KeyInput } from "./KeyInput"
 
-const Output = ({ output }) => {
+const handleDownload = (url, filename) => {
+    const tempLink = document.createElement('a');
+    tempLink.href = url;
+    tempLink.setAttribute('download', `${filename}`);
+    tempLink.click();
+}
+
+const Output = ({ output, glitch }) => {
+    const [filename, changeFilename] = useTextKey('output.txt')
+
     return (
         <div className="paper card">
-            <h2 className="display-2">OUTPUT</h2>
+            <h2 className="display-2">
+                {output ? <input data-text={filename} className={`simple-input display-2 ${glitch ? 'glitch' : ''}`} style={{ color: 'black' }} value={filename} onChange={changeFilename} /> : 'OUTPUT'}
+            </h2>
             <hr />
+
             <div className="flex-center" style={{ height: "100%", flexDirection: "column" }}>
                 <div className="flex-center">
-                    <button className="btn-primary" >
+                    <button onClick={() => handleDownload(output, filename)} className="btn-primary" >
                         download
-                </button>
+                    </button>
                 </div>
-                <p>output.txt</p>
+                <p>{output ? 'Success' : 'No data'}</p>
             </div>
         </div>
     )
 }
 export const StreamCipher = () => {
-    const [polynomial, handlePolynomialInput] = useStateWithValidation(/^[0-9\b]+$/)
+    const [key, handleKeyChange] = useTextKey('')
+    const [file, setFile] = useState(null)
+    const [output, setOutput, , , handleEncodeWithFile, handleDecodeWithFile] = useCipher({ input: file, key: key }, 'lfsr')
+    const [glitch, handleGlitch] = useGlitchEffect()
+
 
     return (
         <>
             <h2 className="display-3">Stream Cipher</h2>
             <div className="container" style={{ maxHeight: "550px" }}>
-                <FileInputCard />
+                <FileInputCard onChange={file => { setFile(file); }} />
                 <div style={{ margin: "0 25px" }} className="paper card">
-                    <PolynomialCard polynomial={polynomial} onPolynomialInput={handlePolynomialInput} />
+                    <h2 className="display-2">LFSR KEY</h2>
                     <hr />
-                    <RunBlock />
+                    <KeyInput keyValue={key} onKeyChange={handleKeyChange} />
+                    <hr />
+                    <RunBlock
+                        onEncode={() => {
+                            handleEncodeWithFile();
+                            handleGlitch();
+                        }}
+                        onDecode={() => {
+                            handleDecodeWithFile();
+                            handleGlitch();
+                        }}
+                    />
                 </div>
-                <Output output={''}/>
+                <Output output={output} glitch={glitch} />
             </div>
         </>
     )
