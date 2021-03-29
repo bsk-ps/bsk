@@ -254,7 +254,8 @@ async def lfsr_stream_cipher(
             (await message_file.read()),
             bytes.fromhex(key.replace(' ', '')),
         ),
-        media_type='application/octet-stream'
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"output_{message_file.filename}\"", },
     )
 
 
