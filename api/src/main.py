@@ -17,10 +17,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from .transposition import columnar, railfence, row_order, disrupted
 from .substitution import caesar, vigenere
 from .lfsr import stream_cipher, LFSR
+from .des import des
 from .utils.api import (
     validate_message_and_file,
     get_content,
     get_transposition_key,
+    hex_key_to_bytes,
 )
 from .utils import word_to_key
 
@@ -246,7 +248,7 @@ async def lfsr_generate_key(
 @router.post("/lfsr/decipher", summary="Lfsr Stream Decipher")
 @router.post("/lfsr/cipher")
 async def lfsr_stream_cipher(
-        message_file: Optional[UploadFile] = File(None),
+        message_file: UploadFile = File(None),
         key: str = Form(...),
 ):
     return Response(
@@ -258,5 +260,56 @@ async def lfsr_stream_cipher(
         headers={"Content-Disposition": f"attachment; filename=\"output_{message_file.filename}\"", },
     )
 
+
+@router.post("/des/cipher")
+async def des_cipher(
+        message_file: UploadFile = File(...),
+        key: str = Form(...),
+):
+    subkeys = des.produce_subkeys(hex_key_to_bytes(key))
+    length = message_file.file.seek(0, 2)
+    await message_file.seek(0)
+    return Response(
+        content=b''.join(
+            [des.cipher(
+                await message_file.read(8),
+                subkeys
+            ) for _ in range(length // 8)] +
+            [des.cipher(
+                b''.join([
+                    (block := await message_file.read(8)), bytes([0]*(8 - len(block) - 1) + [8 - len(block)])
+                ]),
+                subkeys
+            )]
+        ),
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"ciphered_{message_file.filename}\"", },
+    )
+
+
+@router.post("/des/decipher")
+async def des_decipher(
+        message_file: UploadFile = File(...),
+        key: str = Form(...),
+):
+    subkeys = des.produce_subkeys(hex_key_to_bytes(key))[::-1]
+    length = message_file.file.seek(0, 2)
+    if length % 8:
+        return HTTPException(400, detail="File is not padded")
+    await message_file.seek(0)
+    return Response(
+        content=b''.join(
+            [des.cipher(
+                await message_file.read(8),
+                subkeys
+            ) for _ in range(length // 8 - 1)] +
+            [(block := des.cipher(
+                await message_file.read(8),
+                subkeys
+            ))[:-block[-1]]]
+        ),
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"deciphered_{message_file.filename}\"", },
+    )
 
 app.include_router(router)
