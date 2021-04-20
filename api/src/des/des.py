@@ -62,4 +62,4 @@ def cipher(
     # apply inverse of initial permutation
     output = permute(right + left, final_permutation)
 
-    return bytes.fromhex(hex(int(output, 2))[2:])
+    return bytes.fromhex(hex(int(output, 2))[2:].zfill(16))
