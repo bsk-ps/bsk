@@ -5,7 +5,7 @@ import re
 from .generic import zero_base_key
 
 
-validation_regex: re.Pattern = re.compile(r"^\d+(?:-\d+)*$")
+transposition_key_regex: re.Pattern = re.compile(r"^\d+(?:-\d+)*$")
 
 
 class TranspositionKey(list[int]):
@@ -22,7 +22,7 @@ class TranspositionKey(list[int]):
                 v = ''.join(v)
         if not isinstance(v, str):
             raise TypeError("String required")
-        if not validation_regex.fullmatch(v):
+        if not transposition_key_regex.fullmatch(v):
             raise ValueError("Invalid key format")
         key = list(map(int, v.split('-')))
         if not all(value in key for value in range(len(key))):
@@ -42,3 +42,13 @@ def word_to_key(word: str) -> TranspositionKey:
         counter[word[i]] += 1
 
     return TranspositionKey(output)
+
+
+hex_key_regex = re.compile(r"^(?:[0-9a-fA-F]{2}\s){7}[0-9a-fA-F]{2}$")
+
+
+class HexKey(bytes):
+    @classmethod
+    def from_hex(cls, hex_string: str) -> bytes:
+        assert hex_key_regex.fullmatch(hex_string), "Invalid key format"
+        return cls(bytes.fromhex(hex_string.replace(' ', '')))

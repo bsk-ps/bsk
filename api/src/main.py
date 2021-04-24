@@ -1,6 +1,7 @@
 from typing import Optional
 
 from os import getenv
+from random import choices
 
 from fastapi import (
     FastAPI,
@@ -10,16 +11,18 @@ from fastapi import (
     HTTPException,
     APIRouter,
 )
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from .transposition import columnar, railfence, row_order, disrupted
 from .substitution import caesar, vigenere
-from .lfsr import lfsr
+from .lfsr import stream_cipher, LFSR
+from .des import des
 from .utils.api import (
     validate_message_and_file,
     get_content,
     get_transposition_key,
+    hex_key_to_bytes,
 )
 from .utils import word_to_key
 
@@ -217,16 +220,96 @@ async def vigenere_decipher(
 
 
 @router.post("/lfsr/generate")
-async def lfsr_generator(
-        seed: Optional[str] = Form(None),
-        message_file: Optional[UploadFile] = File(None),
-        polynomial: tuple = Form(...),
+async def lfsr_generate_key(
+        seed: Optional[int] = Form(None),
+        polynomial: str = Form(...),
         n: int = Form(...),
 ):
-    validate_message_and_file(seed, message_file)
-    content = await get_content(seed, message_file, False)
+    try:
+        polynomial = list(set(map(int, polynomial.split(' '))))
+        degree = max(polynomial) + 1
+        if seed is None:
+            seed = choices([0, 1], k=degree)
+        else:
+            seed = list(map(int, list(bin(seed)[2:])))
+        seed = seed + [0] * (degree - len(seed))
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid seed or polynomial"
+        )
 
-    return '\n'.join(lfsr.lfsr(line, polynomial, n) for line in content)
+    lfsr = LFSR(seed, polynomial)
+    result_hex = bytes(lfsr.generate_n_bytes(n)).hex()
+    hex_iter = iter(result_hex)
+    return ' '.join(a+b for a, b in zip(hex_iter, hex_iter))
 
+
+@router.post("/lfsr/decipher", summary="Lfsr Stream Decipher")
+@router.post("/lfsr/cipher")
+async def lfsr_stream_cipher(
+        message_file: UploadFile = File(None),
+        key: str = Form(...),
+):
+    return Response(
+        content=stream_cipher.encrypt(
+            (await message_file.read()),
+            bytes.fromhex(key.replace(' ', '')),
+        ),
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"output_{message_file.filename}\"", },
+    )
+
+
+@router.post("/des/cipher")
+async def des_cipher(
+        message_file: UploadFile = File(...),
+        key: str = Form(...),
+):
+    subkeys = des.produce_subkeys(hex_key_to_bytes(key))
+    length = message_file.file.seek(0, 2)
+    await message_file.seek(0)
+    return Response(
+        content=b''.join(
+            [des.cipher(
+                await message_file.read(8),
+                subkeys
+            ) for _ in range(length // 8)] +
+            [des.cipher(
+                b''.join([
+                    (block := await message_file.read(8)), bytes([0]*(8 - len(block) - 1) + [8 - len(block)])
+                ]),
+                subkeys
+            )]
+        ),
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"ciphered_{message_file.filename}\"", },
+    )
+
+
+@router.post("/des/decipher")
+async def des_decipher(
+        message_file: UploadFile = File(...),
+        key: str = Form(...),
+):
+    subkeys = des.produce_subkeys(hex_key_to_bytes(key))[::-1]
+    length = message_file.file.seek(0, 2)
+    if length % 8:
+        return HTTPException(400, detail="File is not padded")
+    await message_file.seek(0)
+    return Response(
+        content=b''.join(
+            [des.cipher(
+                await message_file.read(8),
+                subkeys
+            ) for _ in range(length // 8 - 1)] +
+            [(block := des.cipher(
+                await message_file.read(8),
+                subkeys
+            ))[:-block[-1]]]
+        ),
+        media_type='application/octet-stream',
+        headers={"Content-Disposition": f"attachment; filename=\"deciphered_{message_file.filename}\"", },
+    )
 
 app.include_router(router)

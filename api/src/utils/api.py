@@ -1,7 +1,7 @@
 from fastapi import HTTPException, File
 
 from .generic import remove_whitespace as strip_whitespace
-from .models import TranspositionKey
+from .models import TranspositionKey, HexKey
 
 
 def validate_message_and_file(message: str, message_file: File):
@@ -33,4 +33,11 @@ def get_transposition_key(key):
     try:
         return TranspositionKey(key)
     except ValueError as e:
+        raise HTTPException(400, detail=str(e))
+
+
+def hex_key_to_bytes(key: str) -> bytes:
+    try:
+        return HexKey.from_hex(key)
+    except AssertionError as e:
         raise HTTPException(400, detail=str(e))
