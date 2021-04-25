@@ -15,7 +15,8 @@ export const Navbar = ({ children }) => {
                     <li className="item"> <Link className="default-link" to="/zadanie1">Zadanie 1 </Link></li>
                     <li className="item"> <Link className="default-link" to="/zadanie2">Zadanie 2</Link></li>
                     <li className="item"> <Link className="default-link" to="/zadanie3">Zadanie 3</Link></li>
-                </ul>
+                    <li className="item"> <Link className="default-link" to="/zadanie4">Zadanie 4</Link></li>               
+                    </ul>
             </div>
             <div className="content">
                 {children}

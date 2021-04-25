@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { CryptoPartOne } from "./pages/PartOne";
 import { CryptoPartTwo } from "./pages/PartTwo";
 import {CryptoPartThree} from "./pages/PartThree";
-
+import {CryptoPartFour} from "./pages/PartFour";
 
 function App() {
   return (
@@ -16,7 +16,8 @@ function App() {
             <Route path="/zadanie1" component={CryptoPartOne} />
             <Route path="/zadanie2" component={CryptoPartTwo} />
             <Route path="/zadanie3" component={CryptoPartThree} />
-          </Switch>
+            <Route path="/zadanie4" component={CryptoPartFour} />
+            </Switch>
         </div>
       </Navbar>
     </div>
